@@ -32,7 +32,7 @@ int main() {
     
     printList(head);
     
-    while(1) {
+    while (1) {
         printf("Enter the index of the node to be removed: ");
         scanf("%d", &index);
         
