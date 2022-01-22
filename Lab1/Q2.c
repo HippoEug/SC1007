@@ -115,18 +115,16 @@ void deleteList2(LinkedList *llist) {
 int removeNode2(LinkedList *llist, int index) {
     ListNode *tempNode, *previousNode;
     
-    if (index >= llist->size) {
-        return 0;
-    }
     // If remove node at the front
-    else if (index == 0) {
+    if (index == 0) {
         tempNode = llist->head;
         llist->head = tempNode->next;
         llist->size--;
         return 1;
     }
     // If remove node at the middle or end
-    else if ((previousNode = findNode2(*llist, index-1)) != NULL) {
+    else if (findNode2(*llist, index) != NULL) {
+        previousNode = findNode2(*llist, index-1);
         tempNode = previousNode->next;
         tempNode = tempNode->next;
         
@@ -139,6 +137,7 @@ int removeNode2(LinkedList *llist, int index) {
         llist->size--;
         return 1;
     }
+    
     else {
         return 0;
     }
