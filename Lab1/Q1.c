@@ -114,7 +114,7 @@ int removeNode(ListNode **ptrHead, int index) {
         *ptrHead = tempNode->next;
         return 1;
     }
-    // If remove node at middle or end
+    // If remove node at the middle or end
     else if ((previousNode = findNode(*ptrHead, index-1)) != NULL) {
         // tempnode->next for iterating to next node
         tempNode = previousNode->next;
