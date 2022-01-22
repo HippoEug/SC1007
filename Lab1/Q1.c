@@ -1,6 +1,9 @@
 //
 // TODO: free(Node);
 //
+//
+// TODO: free(Node);
+//
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -32,7 +35,7 @@ int main() {
     
     printList(head);
     
-    while (1) {
+    while(1) {
         printf("Enter the index of the node to be removed: ");
         scanf("%d", &index);
         
@@ -114,8 +117,9 @@ int removeNode(ListNode **ptrHead, int index) {
         *ptrHead = tempNode->next;
         return 1;
     }
-    // If remove node at the middle or end
-    else if ((previousNode = findNode(*ptrHead, index-1)) != NULL) {
+    // If remove node at middle or end
+    else if (findNode(*ptrHead, index) != NULL) {
+        previousNode = findNode(*ptrHead, index-1);
         // tempnode->next for iterating to next node
         tempNode = previousNode->next;
         tempNode = tempNode->next;
