@@ -139,7 +139,6 @@ int removeNode2(LinkedList *llist, int index) {
         llist->size--;
         return 1;
     }
-    
     else {
         return 0;
     }
