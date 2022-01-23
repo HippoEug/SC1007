@@ -134,5 +134,5 @@ int split(ListNode *cur, ListNode **ptrEvenList, ListNode **ptrOddList) {
         count++;
     }
     
-    return 0;
+    return 1;
 }
