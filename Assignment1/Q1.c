@@ -20,7 +20,6 @@ ListNode *reverseSegment(ListNode *head, int start, int end);
 int main() {
     ListNode *head = NULL;
     ListNode *temp = NULL;
-    //ListNode *temp; // ORIGINALLY NOT INITIALISED
     
     float f = 0.0;
     int startIndex, endIndex;
@@ -39,12 +38,16 @@ int main() {
     }
     temp->next = NULL;
     
+    /*
     printf("\nAFTER USER INPUT:\n"); // FOR DEBUG
     printList(head); // FOR DEBUG
+    */
     
     head = reverseSegment(head, startIndex, endIndex);
     
+    /*
     printf("\nAFTER REVERSE FUNCTION:\n"); // FOR DEBUG
+    */
     
     printList(head);
     deleteList(&head);
@@ -77,25 +80,28 @@ ListNode *reverseSegment(ListNode *head, int start, int end) {
     
     int originalStart = start;
 
-    /*
     if (head == NULL || start < 0 || end < 0) {
-        return NULL;
+        return head;
     }
-    */
     
     int diff = end - start;
     
     returningIndex = head;
-    printf("\nreturningIndex->item: %f\n", returningIndex->item);
     
-    //printf("\nhead->item: %f\n", head->item); // debug
+    /*
+    printf("\nreturningIndex->item: %f\n", returningIndex->item);
+    printf("\nhead->item: %f\n", head->item); // debug
+    */
     
     // Step 1: Moving head pointer to the (start index - 1)
     if (start > 1) {
         while (start > 1) {
             head = head->next;
+            
+            /*
             printf("\nhead->item: %f\n", head->item); // debug
             printf("\nHELLOreturningIndex->item: %f\n", returningIndex->item);
+            */
             
             if (head == NULL) {
                 return NULL;
@@ -105,7 +111,10 @@ ListNode *reverseSegment(ListNode *head, int start, int end) {
     }
     
     beforeStartIndex = head;
+    
+    /*
     printf("\nbeforeStartIndex->item: %f\n", beforeStartIndex->item); // debug
+    */
     
     // Step 2
     head = head->next;
