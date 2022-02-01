@@ -77,50 +77,44 @@ ListNode *reverseSegment(ListNode *head, int start, int end) {
     ListNode *beforeStartIndex, *originalStartIndex;
     ListNode *previousNode, *currentNode;
     ListNode *returningIndex;
-    
-    int originalStart = start;
 
     if (head == NULL || start < 0 || end < 0) {
         return head;
     }
     
+    int originalStart = start;
     int diff = end - start;
     
     returningIndex = head;
     
-    /*
-    printf("\nreturningIndex->item: %f\n", returningIndex->item);
-    printf("\nhead->item: %f\n", head->item); // debug
-    */
-    
     // Step 1: Moving head pointer to the (start index - 1)
-    if (start > 1) {
+    if (start > 0) {
         while (start > 1) {
             head = head->next;
-            
-            /*
-            printf("\nhead->item: %f\n", head->item); // debug
-            printf("\nHELLOreturningIndex->item: %f\n", returningIndex->item);
-            */
             
             if (head == NULL) {
                 return NULL;
             }
             start--;
         }
+        
+        beforeStartIndex = head;
+        
+        // Step 2
+        head = head->next;
+        originalStartIndex = head;
+        previousNode = head;
+        currentNode = head;
     }
-    
-    beforeStartIndex = head;
-    
-    /*
-    printf("\nbeforeStartIndex->item: %f\n", beforeStartIndex->item); // debug
-    */
-    
-    // Step 2
-    head = head->next;
-    originalStartIndex = head;
-    previousNode = head;
-    currentNode = head;
+    else {
+        beforeStartIndex = head;
+        //printf("\nbeforeStartIndex->item: %f\n", beforeStartIndex->item); // debug
+        
+        // Step 2
+        originalStartIndex = head;
+        previousNode = head;
+        currentNode = head;
+    }
     
     // Step 3
     head = head->next;
@@ -138,8 +132,8 @@ ListNode *reverseSegment(ListNode *head, int start, int end) {
         diff--;
     }
     
-    originalStartIndex->next = head;
     beforeStartIndex->next = previousNode;
+    originalStartIndex->next = head;
     
     //return returningIndex;
     
