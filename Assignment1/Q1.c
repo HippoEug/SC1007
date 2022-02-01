@@ -15,12 +15,13 @@ typedef struct _listNode {
 
 void printList(ListNode *head);
 void deleteList(ListNode **ptrHead);
-ListNode *reverseSegment(ListNode *head, int start, int end);
+ListNode *reverseSegment(ListNode *head, int start, int end, int size);
 
 int main() {
     ListNode *head = NULL;
     ListNode *temp = NULL;
     
+    int size;
     float f = 0.0;
     int startIndex, endIndex;
     
@@ -35,6 +36,7 @@ int main() {
             temp = temp->next;
         }
         temp->item = f;
+        size++;
     }
     temp->next = NULL;
     
@@ -43,7 +45,7 @@ int main() {
     printList(head); // FOR DEBUG
     */
     
-    head = reverseSegment(head, startIndex, endIndex);
+    head = reverseSegment(head, startIndex, endIndex, size);
     
     /*
     printf("\nAFTER REVERSE FUNCTION:\n"); // FOR DEBUG
@@ -73,12 +75,12 @@ void deleteList(ListNode **ptrHead) {
     *ptrHead = NULL;
 }
 
-ListNode *reverseSegment(ListNode *head, int start, int end) {
+ListNode *reverseSegment(ListNode *head, int start, int end, int size) {
     ListNode *beforeStartIndex, *originalStartIndex;
     ListNode *previousNode, *currentNode;
     ListNode *returningIndex;
 
-    if (head == NULL || start < 0 || end < 0) {
+    if (head == NULL || start < 0 || end < 0 || end > size) {
         return head;
     }
     
