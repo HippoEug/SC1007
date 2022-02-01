@@ -73,63 +73,76 @@ void deleteList(ListNode **ptrHead) {
 
 void reverseKNodes(ListNode **head, int K, int itemCount) {
     ListNode *previousNode, *currentNode;
-    ListNode *tempNode;
+    ListNode *tempNode, *secondNode;
     ListNode *firstNode;
 
     int itemIndex = 0;
+    int outerLoopCount = 0;
     
     tempNode = *head;
     
-    for (int outerLoopCount = 0; outerLoopCount < ((int)(floor(itemCount/K))); outerLoopCount++) {
-        printf("\nOUTER LOOP COUNT %d\n", outerLoopCount);
+    for (itemIndex = 0; itemIndex < itemCount; itemIndex++) {
+        
+        if (outerLoopCount >= (int)(floor(itemCount/K))) {
+            //printf("outerLoopCount: %d, floor(itemCount/K): %d\n", outerLoopCount, (int)(floor(itemCount/K)));
+            break;
+        }
+        
         if (itemIndex % K == 0) {
-            printf("ITEM INDEX %d\n", itemIndex);
+            printf("\nouterLoopCount: %d\n", outerLoopCount);
+            printf("itemIndex: %d\n", itemIndex);
+            
             // STEP 1
             previousNode = tempNode;
-            //printf("%d", previousNode->item);
+            printf("tempNode S1: %d\n", tempNode->item);
             
             if (outerLoopCount == 0) {
                 firstNode = tempNode;
-                printf("FIRST NODE ITEM: %d\n", firstNode->item);
+                printf("firstNode->item: %d\n", firstNode->item);
             }
             else {
-                //printf("%d\n", iterationCount);
-                firstNode = firstNode->next;
-                printf("FIRST NODE ITEM: %d\n", firstNode->item);
+                secondNode = tempNode;
+                printf("secondNode->item: %d\n", secondNode->item);
             }
+            
             currentNode = tempNode;
             
             // STEP 2
             tempNode = tempNode->next;
             currentNode = tempNode;
+            printf("tempNode S2: %d\n", tempNode->item);
             
             for (int innerLoopCount = 0; innerLoopCount < (K - 1); innerLoopCount++) {
                 // STEP 3
-                //printf("K - 1: %d, LoopCount: %d\n", K - 1, loopCount);
-                //printf("%d\n", tempNode->item);
-                
                 tempNode = tempNode->next;
                 currentNode->next = previousNode;
+                printf("tempNode S3: %d\n", tempNode->item);
                 
                 // STEP 4
                 previousNode = currentNode;
                 currentNode = tempNode;
+                printf("tempNode S4: %d\n", tempNode->item);
             }
             
             if (outerLoopCount == 0) {
+                printf("CHANGING HEAD\n");
                 *head = previousNode;
             }
             
-            //printf("%d", outerLoopCount);
             if (outerLoopCount != 0) {
-                //printf("%d", tempNode->item);
-                tempNode->next = firstNode; // BUGGY AF
+                printf("PERFORMING firstNode->next = previousNode\n");
+                printf("DEBUG firstNode: %d\n", firstNode->item);
+                printf("DEBUG previousNode: %d\n", previousNode->item);
+                firstNode->next = previousNode; // BUGGY AF
+                
+                firstNode = secondNode;
             }
-            firstNode->next = tempNode;
             
+            outerLoopCount++;
             
         }
-        itemIndex++;
     }
+    
+    firstNode->next = tempNode;
     printf("\nFUNCTION ENDED\n");
 }
