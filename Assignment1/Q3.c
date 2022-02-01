@@ -41,12 +41,14 @@ int main() {
     }
     temp->next = NULL;
     
-    printf("\nAFTER USER INPUT: \n"); // FOR DEBUG
-    printList(head); // FOR DEBUG
+    //printf("\nAFTER USER INPUT: \n"); // FOR DEBUG
+    //printList(head); // FOR DEBUG
     
-    reverseKNodes(&head, K, itemCount);
+    if (K != 0) {
+        reverseKNodes(&head, K, itemCount);
+    }
     
-    printf("\nAFTER REVERSING: \n"); // FOR DEBUG
+    //printf("\nAFTER REVERSING: \n"); // FOR DEBUG
     printList(head);
     deleteList(&head);
 }
@@ -89,20 +91,20 @@ void reverseKNodes(ListNode **head, int K, int itemCount) {
         }
         
         if (itemIndex % K == 0) {
-            printf("\nouterLoopCount: %d\n", outerLoopCount);
-            printf("itemIndex: %d\n", itemIndex);
+            //printf("\nouterLoopCount: %d\n", outerLoopCount);
+            //printf("itemIndex: %d\n", itemIndex);
             
             // STEP 1
             previousNode = tempNode;
-            printf("tempNode S1: %d\n", tempNode->item);
+            //printf("tempNode S1: %d\n", tempNode->item);
             
             if (outerLoopCount == 0) {
                 firstNode = tempNode;
-                printf("firstNode->item: %d\n", firstNode->item);
+                //printf("firstNode->item: %d\n", firstNode->item);
             }
             else {
                 secondNode = tempNode;
-                printf("secondNode->item: %d\n", secondNode->item);
+                //printf("secondNode->item: %d\n", secondNode->item);
             }
             
             currentNode = tempNode;
@@ -110,30 +112,30 @@ void reverseKNodes(ListNode **head, int K, int itemCount) {
             // STEP 2
             tempNode = tempNode->next;
             currentNode = tempNode;
-            printf("tempNode S2: %d\n", tempNode->item);
+            //printf("tempNode S2: %d\n", tempNode->item);
             
             for (int innerLoopCount = 0; innerLoopCount < (K - 1); innerLoopCount++) {
                 // STEP 3
                 tempNode = tempNode->next;
                 currentNode->next = previousNode;
-                printf("tempNode S3: %d\n", tempNode->item);
+                //printf("tempNode S3: %d\n", tempNode->item);
                 
                 // STEP 4
                 previousNode = currentNode;
                 currentNode = tempNode;
-                printf("tempNode S4: %d\n", tempNode->item);
+                //printf("tempNode S4: %d\n", tempNode->item);
             }
             
             if (outerLoopCount == 0) {
-                printf("CHANGING HEAD\n");
+                //printf("CHANGING HEAD\n");
                 *head = previousNode;
             }
             
             if (outerLoopCount != 0) {
-                printf("PERFORMING firstNode->next = previousNode\n");
-                printf("DEBUG firstNode: %d\n", firstNode->item);
-                printf("DEBUG previousNode: %d\n", previousNode->item);
-                firstNode->next = previousNode; // BUGGY AF
+                //printf("PERFORMING firstNode->next = previousNode\n");
+                //printf("DEBUG firstNode: %d\n", firstNode->item);
+                //printf("DEBUG previousNode: %d\n", previousNode->item);
+                firstNode->next = previousNode;
                 
                 firstNode = secondNode;
             }
@@ -144,5 +146,5 @@ void reverseKNodes(ListNode **head, int K, int itemCount) {
     }
     
     firstNode->next = tempNode;
-    printf("\nFUNCTION ENDED\n");
+    //printf("\nFUNCTION ENDED\n");
 }
