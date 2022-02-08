@@ -134,33 +134,33 @@ void expressionQ(char *infix, Queue *qPtr) {
     temp.size = 0;
     
     int tempChr[SIZE];
-    char tempStr[SIZE];
+    int count = 0;
     
     unsigned long len = strlen(infix);
     //printf("LENGTH OF LEN %d\n", len);
     
     for (int i = 0; i < len; i++) {
-        //printf("%c\n", infix[i]);
-        
+        printf("%c\n", infix[i]);
         
         if (isdigit(infix[i])) {
-            printf("ADDING TO TEMP %d, %d\n", ((int)infix[i] - 48), i);
+            //printf("ADDING TO TEMP %d, %d\n", ((int)infix[i] - 48), i);
             tempChr[i] = ((int)infix[i] - 48);
+            count++;
             //enqueue(&temp, ((int)infix[i] - 48), OPERAND);
         }
         else {
-            printf("CALLING ELSE FUNCTION:\n");
-            printf("Hello %d\n", tempChr[0]);
-            printf("Hello %d\n", tempChr[1]);
-            printf("Hello %d\n", tempChr[2]);
+            //printf("CALLING ELSE FUNCTION:\n");
             
             int total = 0;
-            for (int x = 0; x < 5; x++) { // change x < 5 values
+            for (int x = 0; x < count; x++) {
                 total = (total * 10) + tempChr[x];
             }
+            //printf("Hello %d\n", total);
             
-            printf("Hello %d\n", total);
-            //printExpQ(&temp);
+            enqueue(qPtr, total, OPERAND);
+            enqueue(qPtr, infix[i], OPT);
+            
+            count = 0;
         }
          
          
