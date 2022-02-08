@@ -1,6 +1,16 @@
 //
 // Q1: Arithmetic Expression Queue
 //
+// Function split the operands, operators and paranthesis into a queue
+// Infix: Character String
+// inExpQ: Output Queue
+//
+// Example Input:
+// 1+11*111/(1111-88)
+//
+// Example Output:
+// 1 + 11 * 111 / ( 111 - 88 )
+//
 
 #include <stdio.h>
 #include <stdlib.h>
