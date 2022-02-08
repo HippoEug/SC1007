@@ -61,7 +61,7 @@ int main() {
 
 void push(Stack *sPtr, char item) {
     StackNode *newNode;
-    newNode = malloc(sizeof(StackNode));
+    newNode = (StackNode *)malloc(sizeof(StackNode));
     newNode->item = item;
     newNode->next = sPtr->head;
     sPtr->head = newNode;
