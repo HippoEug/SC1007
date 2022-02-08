@@ -1,3 +1,6 @@
+//
+// NOT COMPLETED
+//
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -157,6 +160,11 @@ void deleteQueue(Queue *qPtr) {
 }
 
 int palindrome(Queue *wordPtr) {
+    // LOOP 1, GO THROUGH STRING AND REMOVE SPACES
+    // LOOP 2, SPLIT STRING INTO TWO HALVES
+    // REVERSE SECOND HALF
+    // COMPARE
+    
     printf("Size of Queue is: %d\n", wordPtr->size);
     
     while (wordPtr != NULL) {
