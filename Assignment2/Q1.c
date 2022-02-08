@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define SIZE 1000
 enum ExpType {OPT, OPERAND};
@@ -111,9 +112,11 @@ void printExpQ(Queue *qPtr) {
     temp = getFront(*qPtr);
     
     while (temp != NULL) {
+        // If Operand
         if (temp->type == OPERAND) {
             printf(" %d ", temp->item);
         }
+        // If Operator
         else {
             printf(" %c ", (char)(temp->item));
         }
@@ -125,5 +128,50 @@ void printExpQ(Queue *qPtr) {
 }
 
 void expressionQ(char *infix, Queue *qPtr) {
-    printf("hello");
+    Queue temp;
+    temp.head = NULL;
+    temp.tail = NULL;
+    temp.size = 0;
+    
+    int tempChr[SIZE];
+    char tempStr[SIZE];
+    
+    unsigned long len = strlen(infix);
+    //printf("LENGTH OF LEN %d\n", len);
+    
+    for (int i = 0; i < len; i++) {
+        //printf("%c\n", infix[i]);
+        
+        
+        if (isdigit(infix[i])) {
+            printf("ADDING TO TEMP %d, %d\n", ((int)infix[i] - 48), i);
+            tempChr[i] = ((int)infix[i] - 48);
+            //enqueue(&temp, ((int)infix[i] - 48), OPERAND);
+        }
+        else {
+            printf("CALLING ELSE FUNCTION:\n");
+            printf("Hello %d\n", tempChr[0]);
+            printf("Hello %d\n", tempChr[1]);
+            printf("Hello %d\n", tempChr[2]);
+            
+            int total = 0;
+            for (int x = 0; x < 5; x++) { // change x < 5 values
+                total = (total * 10) + tempChr[x];
+            }
+            
+            printf("Hello %d\n", total);
+            //printExpQ(&temp);
+        }
+         
+         
+        /*
+        if (isdigit(infix[i])) {
+            enqueue(qPtr, ((int)infix[i] - 48), OPERAND);
+            //enqueue(qPtr, infix[i], OPERAND);
+        }
+        else {
+            enqueue(qPtr, infix[i], OPT);
+        }
+         */
+    }
 }
