@@ -128,10 +128,10 @@ void printExpQ(Queue *qPtr) {
 }
 
 void expressionQ(char *infix, Queue *qPtr) {
-    Queue temp;
-    temp.head = NULL;
-    temp.tail = NULL;
-    temp.size = 0;
+    //Queue temp;
+    //temp.head = NULL;
+    //temp.tail = NULL;
+    //temp.size = 0;
     
     int tempChr[SIZE];
     int count = 0;
