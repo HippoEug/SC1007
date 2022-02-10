@@ -135,43 +135,62 @@ void expressionQ(char *infix, Queue *qPtr) {
     
     int tempChr[SIZE];
     int count = 0;
+    int total = 0;
+    int i = 0;
+    
+    int prevIsOperandFlag = 0;
     
     unsigned long len = strlen(infix);
-    //printf("LENGTH OF LEN %d\n", len);
+    printf("LENGTH OF LEN %lu\n", len);
     
-    for (int i = 0; i < len; i++) {
-        printf("%c\n", infix[i]);
+    for (i = 0; i < len; i++) {
+        //printf("\n%c", infix[i]);
         
         if (isdigit(infix[i])) {
             //printf("ADDING TO TEMP %d, %d\n", ((int)infix[i] - 48), i);
-            tempChr[i] = ((int)infix[i] - 48);
+            //printf("\nFIRST IF INDEX %d\n", i);
+            tempChr[count] = ((int)infix[i] - 48);
             count++;
+            
+            prevIsOperandFlag = 1;
             //enqueue(&temp, ((int)infix[i] - 48), OPERAND);
         }
         else {
+            //printf("FIRST ELSE INDEX %d\n", i);
             //printf("CALLING ELSE FUNCTION:\n");
             
-            int total = 0;
+            total = 0;
             for (int x = 0; x < count; x++) {
                 total = (total * 10) + tempChr[x];
             }
-            //printf("Hello %d\n", total);
+            //printf("Count %d\n", count);
             
-            enqueue(qPtr, total, OPERAND);
+            if (prevIsOperandFlag == 1) {
+                //printf("TOTAL: %d\n", total);
+                enqueue(qPtr, total, OPERAND);
+                prevIsOperandFlag = 0;
+            }
             enqueue(qPtr, infix[i], OPT);
             
-            count = 0;
+            count = 0; // This may be the bug
         }
-         
-         
-        /*
-        if (isdigit(infix[i])) {
-            enqueue(qPtr, ((int)infix[i] - 48), OPERAND);
-            //enqueue(qPtr, infix[i], OPERAND);
+    }
+    if (prevIsOperandFlag == 1) {
+        //printf("\nSECOND IF INDEX %d\n", i);
+        
+        total = 0;
+        for (int x = 0; x < count; x++) {
+            total = (total * 10) + tempChr[x];
         }
-        else {
-            enqueue(qPtr, infix[i], OPT);
-        }
-         */
+        
+        //printf("Count %d\n", count);
+        //printf("TOTAL 2: %d\n", total);
+        enqueue(qPtr, total, OPERAND);
+        prevIsOperandFlag = 0;
+    }
+    else {
+        printf("SECOND ELSE INDEX %d\n", i);
+        //printf("Count %d\n", count);
+        enqueue(qPtr, infix[i], OPT);
     }
 }
