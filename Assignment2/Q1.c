@@ -128,11 +128,6 @@ void printExpQ(Queue *qPtr) {
 }
 
 void expressionQ(char *infix, Queue *qPtr) {
-    //Queue temp;
-    //temp.head = NULL;
-    //temp.tail = NULL;
-    //temp.size = 0;
-    
     int tempChr[SIZE];
     int count = 0;
     int total = 0;
@@ -141,7 +136,7 @@ void expressionQ(char *infix, Queue *qPtr) {
     int prevIsOperandFlag = 0;
     
     unsigned long len = strlen(infix);
-    printf("LENGTH OF LEN %lu\n", len);
+    //printf("LENGTH OF LEN %lu\n", len);
     
     for (i = 0; i < len; i++) {
         //printf("\n%c", infix[i]);
@@ -187,10 +182,5 @@ void expressionQ(char *infix, Queue *qPtr) {
         //printf("TOTAL 2: %d\n", total);
         enqueue(qPtr, total, OPERAND);
         prevIsOperandFlag = 0;
-    }
-    else {
-        printf("SECOND ELSE INDEX %d\n", i);
-        //printf("Count %d\n", count);
-        enqueue(qPtr, infix[i], OPT);
     }
 }
