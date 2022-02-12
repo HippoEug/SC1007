@@ -127,5 +127,83 @@ void deleteList(CDblLinkedList *ptrCDLL) {
 }
 
 int numMountainPairs(CDblLinkedList CDLL) {
-    return 0;
+    int hmin = 0;
+    int pair = 0;
+    int totalPairs = 0;
+    int outerLoop, innerLoop;
+    int checkedFlag = 0;
+    
+    CDblListNode* curr = CDLL.head;
+    CDblListNode* next = CDLL.head;
+    CDblListNode* nextPlus = CDLL.head;
+    CDblListNode* temp = CDLL.head;
+    
+    // Linked list count, where pairs = len + k
+    int len = CDLL.size;
+    
+    if (len < 2) {
+        return 0;
+    }
+    else if (len == 2) {
+        return 1;
+    }
+    
+    next = curr->next;
+    
+    for (outerLoop = 0; outerLoop < len; outerLoop++) {
+        nextPlus = next->next;
+        
+        for (innerLoop = 0; innerLoop < (len - 3); innerLoop++) {
+            checkedFlag = 0;
+            temp = nextPlus;
+            
+            if (curr->item >= temp->item) {
+                hmin = temp->item;
+            }
+            else {
+                hmin = curr->item;
+            }
+            
+            // Anti-clockwise
+            while (temp != curr) {
+                temp = temp->pre;
+                
+                if (hmin < temp->item) {
+                    break;
+                }
+                if (temp->pre == curr) {
+                    checkedFlag = 1;
+                    break;
+                }
+            }
+            
+            temp = nextPlus;
+            
+            // Clockwise
+            while (temp != curr) {
+                temp = temp->next;
+                
+                if (hmin < temp->item) {
+                    break;
+                }
+                if (temp->next == curr) {
+                    checkedFlag = 1;
+                    break;
+                }
+            }
+            
+            if (checkedFlag == 1) {
+                pair += 1;
+            }
+            nextPlus = nextPlus->next;
+        }
+        
+        curr = curr->next;
+        next = curr->next;
+    }
+    
+    // Divide by 2 since checking both directions
+    totalPairs = len + (pair / 2);
+    return totalPairs;
 }
+
