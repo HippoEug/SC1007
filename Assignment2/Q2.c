@@ -159,6 +159,178 @@ int isEmptyStack(Stack s) {
     }
 }
 
+#include <strings.h>
+#include <ctype.h>
+
+int Gerald(char symbol) {
+    switch(symbol) {
+        case '+':
+        case '-':
+            return 2;
+        case '*':
+        case '/':
+            return 4;
+        default:
+            return 7;
+    }
+}
+
+int Farquer(char symbol) {
+    switch(symbol) {
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 3;
+        default:
+            return 8;
+    }
+}
+
 void in2PreLL(char *infix, LinkedList *inExpLL) {
-    printf("hello world");
+    int tempChr[SIZE];
+    int count = 0;
+    int total = 0;
+    int j = 0;
+    
+    int prevIsOperandFlag = 0;
+    
+    unsigned long len = strlen(infix);
+    //printf("LENGTH OF LEN %lu\n", len);
+    
+    for (j = 0; j < len; j++) {
+        //printf("\n%c", infix[i]);
+        
+        if (isdigit(infix[j])) {
+            //printf("ADDING TO TEMP %d, %d\n", ((int)infix[i] - 48), i);
+            //printf("\nFIRST IF INDEX %d\n", i);
+            tempChr[count] = ((int)infix[j] - 48);
+            count++;
+            
+            prevIsOperandFlag = 1;
+            //enqueue(&temp, ((int)infix[i] - 48), OPERAND);
+        }
+        else {
+            //printf("FIRST ELSE INDEX %d\n", i);
+            //printf("CALLING ELSE FUNCTION:\n");
+            
+            total = 0;
+            for (int x = 0; x < count; x++) {
+                total = (total * 10) + tempChr[x];
+            }
+            //printf("Count %d\n", count);
+            
+            if (prevIsOperandFlag == 1) {
+                //printf("TOTAL: %d\n", total);
+                insertNode(inExpLL, total, OPERAND);
+                prevIsOperandFlag = 0;
+            }
+            insertNode(inExpLL, infix[j], OPT);
+            
+            count = 0; // This may be the bug
+        }
+    }
+    if (prevIsOperandFlag == 1) {
+        //printf("\nSECOND IF INDEX %d\n", i);
+        
+        total = 0;
+        for (int x = 0; x < count; x++) {
+            total = (total * 10) + tempChr[x];
+        }
+        
+        //printf("Count %d\n", count);
+        //printf("TOTAL 2: %d\n", total);
+        insertNode(inExpLL, total, OPERAND);
+        prevIsOperandFlag = 0;
+    }
+    
+    
+    // START OF INTERNET CODE
+    int position = 0;
+    int top; // top of stack pointer
+    unsigned long length; // length of expression
+    char symbol; // scanned character
+    char temp; // when item popped from stack, keep in temp
+    
+    char arrayS[50]; // stack of type character
+    char infixWeb[50], prefixWeb[50];
+    
+    int i, t1;
+    top = -1;
+    
+    length = len;
+    length = length - 1;
+    position = length;
+    t1 = length;
+    
+    char item;
+    
+    while (length >= 0) {
+        symbol = infix[length];
+        
+        switch(symbol) {
+            case ')':
+                top = top + 1;
+                arrayS[top] = symbol;
+                break;
+            case '(':
+                item = arrayS[top];
+                top = top - 1;
+                temp = item;
+                //temp = pop();
+                
+                while (temp != ')') {
+                    prefixWeb[position] = temp;
+                    position--;
+                    item = arrayS[top];
+                    top = top - 1;
+                    temp = item;
+                    //temp = pop();
+                }
+                if (temp != ')') {
+                    item = arrayS[top];
+                    top = top - 1;
+                    temp = item;
+                    //temp = pop();
+                    prefixWeb[position--] = temp;
+                }
+                break;
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+                while (Farquer(arrayS[top]) >= Gerald(symbol)) {
+                    item = arrayS[top];
+                    top = top - 1;
+                    temp = item;
+                    //temp = pop();
+                    prefixWeb[position] = temp;
+                    position--;
+                }
+                
+                top = top + 1;
+                arrayS[top] = symbol;
+                //push(symbol);
+                break;
+            default:
+                prefixWeb[position--] = symbol;
+                break;
+        }
+        length--;
+    }
+    
+    while (arrayS[49] != '#') {
+        item = arrayS[top];
+        top = top - 1;
+        temp = item;
+        //temp = pop();
+        prefixWeb[position--] = temp;
+    }
+    
+    for (i = 0; i < t1; i++) {
+        prefixWeb[i] = prefixWeb[i + position + 1];
+    }
+    
+    printf("%s\n", prefixWeb);
 }
