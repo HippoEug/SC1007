@@ -159,178 +159,133 @@ int isEmptyStack(Stack s) {
     }
 }
 
-#include <strings.h>
-#include <ctype.h>
-
-int Gerald(char symbol) {
-    switch(symbol) {
-        case '+':
-        case '-':
-            return 2;
-        case '*':
-        case '/':
-            return 4;
-        default:
-            return 7;
+void in2PreLL(char* infix, LinkedList *inExpLL) {
+    // Operands
+    char temp;
+    int opr = 0;
+    int oprWeight = 1;
+    
+    // Operators
+    Stack opt;
+    opt.head = NULL;
+    opt.size=0;
+    
+    // Operand Weight Management
+    int currentOpr;
+    int previousOpr;
+    
+    // Count string length
+    int stringLength = 0;
+    char tempChar = infix[0];
+    while (tempChar != '\0') {
+        stringLength++;
+        tempChar = infix[stringLength];
     }
-}
+    
+    // Reversed from the back
+    for (int i = (stringLength - 1); i >= 0; i--) {
+        temp = infix[i];
+        //printf("temp %c\n", temp);
 
-int Farquer(char symbol) {
-    switch(symbol) {
-        case '+':
-        case '-':
-            return 1;
-        case '*':
-        case '/':
-            return 3;
-        default:
-            return 8;
-    }
-}
-
-void in2PreLL(char *infix, LinkedList *inExpLL) {
-    int tempChr[SIZE];
-    int count = 0;
-    int total = 0;
-    int j = 0;
-    
-    int prevIsOperandFlag = 0;
-    
-    unsigned long len = strlen(infix);
-    //printf("LENGTH OF LEN %lu\n", len);
-    
-    for (j = 0; j < len; j++) {
-        //printf("\n%c", infix[i]);
-        
-        if (isdigit(infix[j])) {
-            //printf("ADDING TO TEMP %d, %d\n", ((int)infix[i] - 48), i);
-            //printf("\nFIRST IF INDEX %d\n", i);
-            tempChr[count] = ((int)infix[j] - 48);
-            count++;
+        // If Operand Opr
+        if ('0' <= temp && temp <= '9') {
+            //printf("HELLO %c\n", temp);
             
-            prevIsOperandFlag = 1;
-            //enqueue(&temp, ((int)infix[i] - 48), OPERAND);
+            // Concetanate digits
+            //printf("opr %d, temp %d, oprCount %d\n", opr, temp - '0', oprCount);
+            opr = opr + ((temp - '0') * oprWeight);
+            oprWeight = oprWeight*10;
         }
+        // Else if Operator Opt
         else {
-            //printf("FIRST ELSE INDEX %d\n", i);
-            //printf("CALLING ELSE FUNCTION:\n");
-            
-            total = 0;
-            for (int x = 0; x < count; x++) {
-                total = (total * 10) + tempChr[x];
-            }
-            //printf("Count %d\n", count);
-            
-            if (prevIsOperandFlag == 1) {
-                //printf("TOTAL: %d\n", total);
-                insertNode(inExpLL, total, OPERAND);
-                prevIsOperandFlag = 0;
-            }
-            insertNode(inExpLL, infix[j], OPT);
-            
-            count = 0; // This may be the bug
-        }
-    }
-    if (prevIsOperandFlag == 1) {
-        //printf("\nSECOND IF INDEX %d\n", i);
-        
-        total = 0;
-        for (int x = 0; x < count; x++) {
-            total = (total * 10) + tempChr[x];
-        }
-        
-        //printf("Count %d\n", count);
-        //printf("TOTAL 2: %d\n", total);
-        insertNode(inExpLL, total, OPERAND);
-        prevIsOperandFlag = 0;
-    }
-    
-    
-    // START OF INTERNET CODE
-    int position = 0;
-    int top; // top of stack pointer
-    unsigned long length; // length of expression
-    char symbol; // scanned character
-    char temp; // when item popped from stack, keep in temp
-    
-    char arrayS[50]; // stack of type character
-    char infixWeb[50], prefixWeb[50];
-    
-    int i, t1;
-    top = -1;
-    
-    length = len;
-    length = length - 1;
-    position = length;
-    t1 = length;
-    
-    char item;
-    
-    while (length >= 0) {
-        symbol = infix[length];
-        
-        switch(symbol) {
-            case ')':
-                top = top + 1;
-                arrayS[top] = symbol;
-                break;
-            case '(':
-                item = arrayS[top];
-                top = top - 1;
-                temp = item;
-                //temp = pop();
+            //printf("BYE %c\n", temp);
+
+            // Prevent 0 from being appended
+            if (opr > 0){
+                // Push operand into queue
+                insertNode(inExpLL, opr, OPERAND);
                 
-                while (temp != ')') {
-                    prefixWeb[position] = temp;
-                    position--;
-                    item = arrayS[top];
-                    top = top - 1;
-                    temp = item;
-                    //temp = pop();
+                oprWeight = 1;
+                opr = 0;
+            }
+        
+            // Sort Operator Stack
+            if (temp == '+' || temp == '-') {
+                if (!isEmptyStack(opt)) {
+                    
+                    // Get currentOpr
+                    if (temp == '+' || temp == '-') {
+                        currentOpr = 1;
+                    }
+                    else if (temp == '/' || temp == '*') {
+                        currentOpr = 2;
+                    }
+                    else {
+                        currentOpr = -1;
+                    }
+                    
+                    // Get previousOpr from Stack
+                    if (peek(opt) == '+' || peek(opt) == '-') {
+                        previousOpr = 1;
+                    }
+                    else if (peek(opt) == '/' || peek(opt) == '*') {
+                        previousOpr = 2;
+                    }
+                    else {
+                        previousOpr = -1;
+                    }
+                    
+                    // Compare both operators
+                    while (currentOpr < previousOpr){
+                        insertNode(inExpLL,peek(opt), OPT);
+                        pop(&opt);
+                        
+                        if (isEmptyStack(opt)) {
+                            break;
+                        }
+                        else {
+                            // Get previousOpr from Stack
+                            if (peek(opt) == '+' || peek(opt) == '-') {
+                                previousOpr = 1;
+                            }
+                            else if (peek(opt) == '/' || peek(opt) == '*') {
+                                previousOpr = 2;
+                            }
+                            else {
+                                previousOpr = -1;
+                            }
+                        }
+                    }
                 }
-                if (temp != ')') {
-                    item = arrayS[top];
-                    top = top - 1;
-                    temp = item;
-                    //temp = pop();
-                    prefixWeb[position--] = temp;
+                push(&opt, temp);
+            }
+            else if (temp == '(') {
+                while (peek(opt) != ')') {
+                    insertNode(inExpLL, peek(opt), OPT);
+                    pop(&opt);
                 }
-                break;
-            case '+':
-            case '-':
-            case '*':
-            case '/':
-                while (Farquer(arrayS[top]) >= Gerald(symbol)) {
-                    item = arrayS[top];
-                    top = top - 1;
-                    temp = item;
-                    //temp = pop();
-                    prefixWeb[position] = temp;
-                    position--;
-                }
-                
-                top = top + 1;
-                arrayS[top] = symbol;
-                //push(symbol);
-                break;
-            default:
-                prefixWeb[position--] = symbol;
-                break;
+                pop(&opt);
+            }
+            else {
+                push(&opt, temp);
+            }
         }
-        length--;
+
+        // printExpLL(*inExpLL);
+    }
+
+    // Clear remaining operands at the "front"
+    if (opr > 0){
+        insertNode(inExpLL, opr, OPERAND);
+        
+        oprWeight = 1;
+        opr = 0;
     }
     
-    while (arrayS[49] != '#') {
-        item = arrayS[top];
-        top = top - 1;
-        temp = item;
-        //temp = pop();
-        prefixWeb[position--] = temp;
+    // Clear remaining operators at the "front"
+    while (!isEmptyStack(opt)) {
+        insertNode(inExpLL, peek(opt), OPT);
+        pop(&opt);
     }
-    
-    for (i = 0; i < t1; i++) {
-        prefixWeb[i] = prefixWeb[i + position + 1];
-    }
-    
-    printf("%s\n", prefixWeb);
 }
+
