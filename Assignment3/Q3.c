@@ -13,7 +13,7 @@
 // ie Output 1
 // 124567389
 // 564729831
-// 546271983 (might be wrong)
+// 546271983
 //
 // ie Input 2
 // 124567389ABC
@@ -36,8 +36,10 @@ typedef struct _btnode {
     struct _btnode *right;
 } BTNode;
 
-BTNode *insertBTNode(BTNode *cur, int item, int leftFlag);
+BTNode *insertBTNode(int item);
 void buildTree(BTNode **node, char *preO, char *postO);
+BTNode *build(char *preO, char *postO, int *preIndex, int l, int h, int size);
+
 void inOrder(BTNode *cur);
 void preOrder(BTNode *cur);
 void postOrder(BTNode *cur);
@@ -93,44 +95,41 @@ void postOrder(BTNode *cur) {
     printf("%c", cur->id);
 }
 
-BTNode *insertBTNode(BTNode *cur, int item, int leftFlag) {
-    if (cur == NULL){
-        BTNode* node = (BTNode*) malloc(sizeof(BTNode));
-        node->id = item;
-        node->left = node->right = NULL;
-        return node;
-    }
-    
-    if (leftFlag == 1) {
-        cur->left  = insertBTNode (cur->left, item, leftFlag);
-    }
-    else {
-        cur->right = insertBTNode (cur->right, item, leftFlag);
-    }
-    
-    return cur;
+BTNode *insertBTNode(int item) {
+    BTNode* node = (BTNode*) malloc(sizeof(BTNode));
+    node->id = item;
+    node->left = node->right = NULL;
+    return node;
 }
 
-void findRightMost(char curChar, char *preO, char *postO) {
-    // Get length of preO and postO strings
-    int preOLength = 0;
-    int postOLength = 0;
-    while (preO[preOLength] != '\0') {
-        preOLength++;
-    }
-    while (postO[postOLength] != '\0') {
-        postOLength++;
-    }
-    if (preOLength != postOLength) {
-        return;
+BTNode *build(char *preO, char *postO, int *preIndex, int l, int h, int size) {
+    if (*preIndex >= size || l > h) {
+        return NULL;
     }
     
+    BTNode* root = insertBTNode(preO[*preIndex]);
+    ++*preIndex;
     
+    if (l == h) {
+        return root;
+    }
+    
+    int i;
+    for (i = l; i <= h; ++i) {
+        if (preO[*preIndex] == postO[i]) {
+            break;
+        }
+    }
+    
+    if (i <= h) {
+        root->left = build(preO, postO, preIndex, l, i, size);
+        root->right = build(preO, postO, preIndex, i + 1, h - 1, size);
+    }
+    
+    return root;
 }
 
 void buildTree(BTNode **node, char *preO, char *postO) {
-    BTNode *cur = NULL;
-    
     // Get length of preO and postO strings
     int preOLength = 0;
     int postOLength = 0;
@@ -143,47 +142,10 @@ void buildTree(BTNode **node, char *preO, char *postO) {
     if (preOLength != postOLength) {
         return;
     }
-    printf("Length of string is %d (preO), %d (postO)\n", preOLength, postOLength);
+    //printf("Length of string is %d (preO), %d (postO)\n", preOLength, postOLength);
     
-    // Initialize root node
-    *node = insertBTNode(*node, preO[0], 0);
+    int preIndex = 0;
+    *node = build(preO, postO, &preIndex, 0, preOLength - 1, preOLength);
     
-    // Initialize 1st left node
-    *node = insertBTNode(*node, preO[1], 1);
-    
-    
-    for (int i = 2; i < preOLength; i++) {
-        //printf("%c", preO[i]);
-        
-        findRightMost(preO[i], preO, postO);
-    }
-    
-    
-    
-    printf("\npreO:\n");
-    for (int i = 0; i < preOLength; i++) {
-        printf("%c", preO[i]);
-    }
-    printf("\n");
-    
-    printf("postO:\n");
-    for (int i = 0; i < postOLength; i++) {
-        printf("%c", postO[i]);
-    }
-    printf("\n");
-    
-    printf("\nRESULTS BELOW\n");
-
-    // 3. recursive function - yes you need to call this function again and again
-
-    // 4. find your left subtree nodes
-    // HINT: how do you determine the root node for the left subtree
-    // HINT: how do you determine the number of nodes for left subtree
-
-    // 5. create new preO and postO for the left subtree and do the recursive for left subtree
-    // HINT: when you don't have strcpy() from string.h, then how do you get substrings?
-    // HINT: create your own helper function to create substring? maybe?
-
-    // 6. repeat steps 4 and 5 for the right subtree
-    // HINT: what if right subtree doesn't exist? e.g. preO = '5 6' postO = '6 5'
+    //printf("\nRESULTS BELOW\n");
 }
