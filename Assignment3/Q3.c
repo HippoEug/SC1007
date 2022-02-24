@@ -24,6 +24,8 @@
 // 56472BCA9831
 // 546271BAC983
 //
+// Credits: https://www.geeksforgeeks.org/full-and-complete-binary-tree-from-given-preorder-and-postorder-traversals/
+//
 
 #include <stdio.h>
 #include <stdlib.h>
