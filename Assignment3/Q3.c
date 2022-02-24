@@ -40,7 +40,7 @@ typedef struct _btnode {
 
 BTNode *insertBTNode(int item);
 void buildTree(BTNode **node, char *preO, char *postO);
-BTNode *build(char *preO, char *postO, int *preIndex, int l, int h, int size);
+BTNode *build(char *preO, char *postO, int *preOIndex, int postOLowIndex, int postOHighIndex, int preOLength);
 
 void inOrder(BTNode *cur);
 void preOrder(BTNode *cur);
@@ -104,28 +104,32 @@ BTNode *insertBTNode(int item) {
     return node;
 }
 
-BTNode *build(char *preO, char *postO, int *preIndex, int l, int h, int size) {
-    if (*preIndex >= size || l > h) {
+BTNode *build(char *preO, char *postO, int *preOIndex, int postOLowIndex, int postOHighIndex, int preOLength) {
+    if ((postOLowIndex > postOHighIndex) || (*preOIndex >= preOLength)) {
         return NULL;
     }
     
-    BTNode* root = insertBTNode(preO[*preIndex]);
-    ++*preIndex;
+    // Make first index of preO root
+    BTNode* root = insertBTNode(preO[*preOIndex]);
+    ++*preOIndex;
     
-    if (l == h) {
+    // If only 1 element
+    if (postOLowIndex == postOHighIndex) {
         return root;
     }
     
-    int i;
-    for (i = l; i <= h; ++i) {
-        if (preO[*preIndex] == postO[i]) {
+    // Find next element of preO in postO
+    int nextElement;
+    for (nextElement = postOLowIndex; nextElement <= postOHighIndex; nextElement++) {
+        if (preO[*preOIndex] == postO[nextElement]) {
             break;
         }
     }
     
-    if (i <= h) {
-        root->left = build(preO, postO, preIndex, l, i, size);
-        root->right = build(preO, postO, preIndex, i + 1, h - 1, size);
+    // Divide postO into left and right subtree
+    if (nextElement <= postOHighIndex) {
+        root->left = build(preO, postO, preOIndex, postOLowIndex, nextElement, preOLength);
+        root->right = build(preO, postO, preOIndex, (nextElement + 1), (postOHighIndex - 1), preOLength);
     }
     
     return root;
@@ -146,8 +150,12 @@ void buildTree(BTNode **node, char *preO, char *postO) {
     }
     //printf("Length of string is %d (preO), %d (postO)\n", preOLength, postOLength);
     
-    int preIndex = 0;
-    *node = build(preO, postO, &preIndex, 0, preOLength - 1, preOLength);
+    // preOIndex for keeping track of index in preO
+    int preOIndex = 0;
+    // Calls recursive function to construct tree
+    int postOLowIndex = 0;
+    int postOHighIndex = preOLength - 1;
+    *node = build(preO, postO, &preOIndex, postOLowIndex, postOHighIndex, preOLength);
     
     //printf("\nRESULTS BELOW\n");
 }
