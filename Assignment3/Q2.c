@@ -62,6 +62,10 @@ BTNode *getFront(Queue q);
 int isEmptyQueue(Queue q);
 int twoNodesCost(BTNode *node, int nodeV1, int nodeV2);
 
+void inOrder(BTNode *root);
+void preOrder(BTNode *root);
+void postOrder(BTNode *root);
+
 int main() {
     BTNode *root = (BTNode*) malloc(sizeof(BTNode));
     
@@ -106,6 +110,13 @@ int main() {
     printBTNode(root, 0, 0);
     
     printf("Distance is %d\n", cost);
+    
+    preOrder(root);
+    printf("\n");
+    postOrder(root);
+    printf("\n");
+    inOrder(root);
+    printf("\n");
 }
 
 void enqueue(Queue *qPtr, BTNode *node) {
@@ -156,6 +167,36 @@ int isEmptyQueue(Queue q) {
     }
 }
 
+void inOrder(BTNode *root) {
+    if (root == NULL) {
+        return;
+    }
+    
+    inOrder(root->left);
+    printf("%d", root->nodeV);
+    inOrder(root->right);
+}
+
+void preOrder(BTNode *root) {
+    if (root == NULL) {
+        return;
+    }
+    
+    printf("%d", root->nodeV);
+    preOrder(root->left);
+    preOrder(root->right);
+}
+
+void postOrder(BTNode *root) {
+    if (root == NULL) {
+        return;
+    }
+    
+    postOrder(root->left);
+    postOrder(root->right);
+    printf("%d", root->nodeV);
+}
+
 void printBTNode(BTNode *root, int space, int left) {
     if (root != NULL) {
         int i;
@@ -171,15 +212,15 @@ void printBTNode(BTNode *root, int space, int left) {
                 printf("|___");
             }
         }
-        
+    
         printf("%d\n", root->nodeV);
-        
         space++;
+        
         printBTNode(root->left, space, 1);
         printBTNode(root->right, space, 0);
     }
 }
 
 int twoNodesCost(BTNode *node, int nodeV1, int nodeV2) {
-    
+    return 0;
 }
