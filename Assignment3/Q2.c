@@ -60,6 +60,9 @@ void enqueue(Queue *qPtr, BTNode *node);
 int dequeue(Queue *qPtr);
 BTNode *getFront(Queue q);
 int isEmptyQueue(Queue q);
+
+int getLevel(BTNode *root, int node, int level);
+BTNode *getCost(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int *distOfV2FromRoot, int *distOfV1V2, int level);
 int twoNodesCost(BTNode *node, int nodeV1, int nodeV2);
 
 void inOrder(BTNode *root);
@@ -221,6 +224,81 @@ void printBTNode(BTNode *root, int space, int left) {
     }
 }
 
+int getLevel(BTNode *root, int node, int level) {
+    if (root == NULL) {
+        return -1;
+    }
+    
+    if (root->nodeV == node) {
+        return level;
+    }
+    
+    int l = getLevel(root->left, node, level+1);
+    
+    if (l != -1) {
+        return l;
+    }
+    else {
+        getLevel(root->right, node, level+1);
+    }
+    
+    return -1;
+}
+
+BTNode *getCost(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int *distOfV2FromRoot, int *distOfV1V2, int level) {
+    if (root == NULL) {
+        return NULL;
+    }
+    
+    if (root->nodeV == nodeV1) {
+        *distOfV1FromRoot = level;
+        return root;
+    }
+    if (root->nodeV == nodeV2) {
+        *distOfV2FromRoot = level;
+        return root;
+    }
+    
+    BTNode *leftAncestor = getCost(root->left, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
+    BTNode *rightAncestor = getCost(root->right, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
+    
+    if (leftAncestor && rightAncestor) {
+        *distOfV1V2 = *distOfV1FromRoot + *distOfV2FromRoot - (2*level);
+        return root;
+    }
+    
+    if (leftAncestor != NULL) {
+        return leftAncestor;
+    }
+    else {
+        return rightAncestor;
+    }
+}
+
 int twoNodesCost(BTNode *node, int nodeV1, int nodeV2) {
-    return 0;
+    int distOfV1FromRoot = -1;
+    int distOfV2FromRoot = -1;
+    int distOfV1V2 = 0;
+    
+    BTNode *lowestCommonAncestor = getCost(node, nodeV1, nodeV2, &distOfV1FromRoot, &distOfV2FromRoot, &distOfV1V2, 1);
+    printf("distOfV1FromRoot: %d\n", distOfV1FromRoot);
+    printf("distOfV2FromRoot: %d\n", distOfV2FromRoot);
+    printf("distOfV1V2: %d\n", distOfV1V2);
+    
+    if ((distOfV1FromRoot != -1) && (distOfV2FromRoot != -1)) {
+        return distOfV1V2;
+    }
+    
+    if (distOfV1FromRoot != -1) {
+        distOfV1V2 = getLevel(lowestCommonAncestor, nodeV2, 0);
+        return distOfV1V2;
+    }
+    
+    if (distOfV2FromRoot != -1) {
+        distOfV1V2 = getLevel(lowestCommonAncestor, nodeV1, 0);
+        return distOfV1V2;
+    }
+ 
+    // return -1 if neither nodeV1 or nodeV2 is not in tree
+    return -1;
 }
