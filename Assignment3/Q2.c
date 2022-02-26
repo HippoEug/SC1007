@@ -33,6 +33,9 @@
 // |        |--8
 // |        |       |---9
 // Distance is 18
+//
+// Credits: https://www.johncanessa.com/2021/11/20/sum-of-nodes-between-two-nodes-in-binary-tree/
+//
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -224,11 +227,13 @@ void printBTNode(BTNode *root, int space, int left) {
     }
 }
 
+// Get level of node if it is present in tree
 int getLevel(BTNode *root, int node, int level) {
     if (root == NULL) {
         return -1;
     }
     
+    // If node is present in root, or left & right subtree
     if (root->nodeV == node) {
         return level;
     }
@@ -245,28 +250,42 @@ int getLevel(BTNode *root, int node, int level) {
     return -1;
 }
 
+// Returns pointer to lowest common ancestor of nodeV1 & nodeV2
 BTNode *getCost(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int *distOfV2FromRoot, int *distOfV1V2, int level) {
     if (root == NULL) {
         return NULL;
     }
     
+    //printf("\nAHA CASE 0: root->nodeV = %d\n", root->nodeV);
+    // if either nodeV1 or nodeV2 matches with root
     if (root->nodeV == nodeV1) {
         *distOfV1FromRoot = level;
+        //printf("\nAHA CASE 1: root->nodeV = %d\n", root->nodeV);
         return root;
     }
     if (root->nodeV == nodeV2) {
         *distOfV2FromRoot = level;
+        //printf("\nAHA CASE 2: root->nodeV = %d\n", root->nodeV);
         return root;
     }
     
+    // Look for nodeV1 and nodeV2 in left and right subtrees
     BTNode *leftAncestor = getCost(root->left, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
     BTNode *rightAncestor = getCost(root->right, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
     
+    // Lowest common ancestor node
     if (leftAncestor && rightAncestor) {
+        //printf("\nIn getCost LCA:\n");
+        //printf("leftAncestor->nodeV = %d\n", leftAncestor->nodeV);
+        //printf("rightAncestor->nodeV = %d\n", rightAncestor->nodeV);
+        //printf("\n");
+        
         *distOfV1V2 = *distOfV1FromRoot + *distOfV2FromRoot - (2*level);
+        printf("\nLOWEST COMMON ANCESTOR NODE: root->nodeV = %d\n", root->nodeV);
         return root;
     }
     
+    // Else check if left or right subtree is lowest common ancestor
     if (leftAncestor != NULL) {
         return leftAncestor;
     }
@@ -285,17 +304,23 @@ int twoNodesCost(BTNode *node, int nodeV1, int nodeV2) {
     printf("distOfV2FromRoot: %d\n", distOfV2FromRoot);
     printf("distOfV1V2: %d\n", distOfV1V2);
     
+    // If both nodeV1 & nodeV2 present in binary tree
     if ((distOfV1FromRoot != -1) && (distOfV2FromRoot != -1)) {
+        printf("Case 1\n");
         return distOfV1V2;
     }
     
+    // If nodeV1 is ancestor of nodeV2, consider nodeV1 as root
     if (distOfV1FromRoot != -1) {
         distOfV1V2 = getLevel(lowestCommonAncestor, nodeV2, 0);
+        printf("Case 2\n");
         return distOfV1V2;
     }
     
+    // If nodeV2 is ancestor of nodeV1, consider nodeV2 as root
     if (distOfV2FromRoot != -1) {
         distOfV1V2 = getLevel(lowestCommonAncestor, nodeV1, 0);
+        printf("Case 3\n");
         return distOfV1V2;
     }
  
