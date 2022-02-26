@@ -52,6 +52,7 @@ typedef struct _stack {
 } Stack;
 
 void deleteTree(BTNode **root);
+char *createExpTreeRecursive(BTNode **root, char *prefix);
 void createExpTree(BTNode **root, char *prefix);
 void printTree(BTNode *node);
 void printTreePostfix(BTNode *node);
@@ -130,18 +131,66 @@ void deleteTree(BTNode **root) {
     }
 }
 
+// Build expression tree recursively
+char *createExpTreeRecursive(BTNode **root, char *prefix) {
+    if (*prefix == '\0') {
+        return '\0';
+    }
+    
+    while (1) {
+        char *q = "null";
+        
+        if (*root == NULL) {
+            BTNode *newNode = (BTNode*)malloc(sizeof(BTNode));
+            newNode->item = *prefix;
+            newNode->left = newNode->right = NULL;
+            *root = newNode;
+        }
+        else {
+            // Checking for operand
+            if (*prefix >= '0' && *prefix <= '9') {
+                return prefix;
+            }
+            
+            // Build left subtree
+            q = createExpTreeRecursive(&(*root)->left, prefix + 1);
+            // Build right subtree
+            q = createExpTreeRecursive(&(*root)->right, q + 1);
+            
+            return q;
+        }
+    }
+}
+
+// Build expression tree recursively
 void createExpTree(BTNode **root, char *prefix) {
-    
+    createExpTreeRecursive(root, prefix);
 }
 
+// print Infix
 void printTree(BTNode *node) {
-    
+    if (node == NULL) {
+        return;
+    }
+    else {
+        printTree(node->left);
+        printf("%c ", node->item);
+        printTree(node->right);
+    }
 }
 
+// print Postfix
 void printTreePostfix(BTNode *node) {
-    
+    if (node == NULL) {
+        return;
+    }
+    else {
+        printTreePostfix(node->left);
+        printTreePostfix(node->right);
+        printf("%c ", node->item);
+    }
 }
 
 double computeTree(BTNode *node) {
-    
+    return 0;
 }
