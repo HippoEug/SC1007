@@ -65,7 +65,8 @@ BTNode *getFront(Queue q);
 int isEmptyQueue(Queue q);
 
 int getLevel(BTNode *root, int node, int level);
-BTNode *getCost(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int *distOfV2FromRoot, int *distOfV1V2, int level);
+int getCost(BTNode *lowestCommonAncestor, int *nodeV1, int *nodeV2);
+BTNode *getLCA(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int *distOfV2FromRoot, int *distOfV1V2, int level);
 int twoNodesCost(BTNode *node, int nodeV1, int nodeV2);
 
 void inOrder(BTNode *root);
@@ -117,12 +118,12 @@ int main() {
     
     printf("Distance is %d\n", cost);
     
-    preOrder(root);
-    printf("\n");
-    postOrder(root);
-    printf("\n");
-    inOrder(root);
-    printf("\n");
+    //preOrder(root);
+    //printf("\n");
+    //postOrder(root);
+    //printf("\n");
+    //inOrder(root);
+    //printf("\n");
 }
 
 void enqueue(Queue *qPtr, BTNode *node) {
@@ -250,8 +251,43 @@ int getLevel(BTNode *root, int node, int level) {
     return -1;
 }
 
+int getCost(BTNode *lowestCommonAncestor, int *nodeV1, int *nodeV2) {
+    int sumOfCost = 0;
+    
+    if (lowestCommonAncestor == NULL) {
+        return 0;
+    }
+ 
+    if (lowestCommonAncestor->left != NULL) {
+        sumOfCost = getCost(lowestCommonAncestor->left, nodeV1, nodeV2) + sumOfCost;
+    }
+    if (lowestCommonAncestor->right != NULL) {
+        sumOfCost = getCost(lowestCommonAncestor->right, nodeV1, nodeV2) + sumOfCost;
+    }
+ 
+    if (lowestCommonAncestor->left != NULL && lowestCommonAncestor->left->nodeV == *nodeV1) {
+        sumOfCost = (lowestCommonAncestor->left->nodeV + sumOfCost);
+        *nodeV1 = lowestCommonAncestor->nodeV;
+    }
+    else if (lowestCommonAncestor->left != NULL && lowestCommonAncestor->left->nodeV == *nodeV2) {
+        sumOfCost = (lowestCommonAncestor->left->nodeV + sumOfCost);
+        *nodeV2 = lowestCommonAncestor->nodeV;
+    }
+
+    if (lowestCommonAncestor->right != NULL && lowestCommonAncestor->right->nodeV == *nodeV1) {
+        sumOfCost = (lowestCommonAncestor->right->nodeV + sumOfCost);
+        *nodeV1 = lowestCommonAncestor->nodeV;
+    }
+    else if (lowestCommonAncestor->right != NULL && lowestCommonAncestor->right->nodeV == *nodeV2) {
+        sumOfCost = (lowestCommonAncestor->right->nodeV + sumOfCost);
+        *nodeV2 = lowestCommonAncestor->nodeV;
+    }
+    
+    return sumOfCost;
+}
+
 // Returns pointer to lowest common ancestor of nodeV1 & nodeV2
-BTNode *getCost(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int *distOfV2FromRoot, int *distOfV1V2, int level) {
+BTNode *getLCA(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int *distOfV2FromRoot, int *distOfV1V2, int level) {
     if (root == NULL) {
         return NULL;
     }
@@ -270,9 +306,19 @@ BTNode *getCost(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int
     }
     
     // Look for nodeV1 and nodeV2 in left and right subtrees
-    BTNode *leftAncestor = getCost(root->left, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
-    BTNode *rightAncestor = getCost(root->right, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
+    BTNode *leftAncestor = getLCA(root->left, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
+    BTNode *rightAncestor = getLCA(root->right, nodeV1, nodeV2, distOfV1FromRoot, distOfV2FromRoot, distOfV1V2, (level+1));
     
+    if (leftAncestor == NULL) {
+        return rightAncestor;
+    }
+    if (rightAncestor == NULL) {
+        return leftAncestor;
+    }
+
+    return root;
+    
+    /*
     // Lowest common ancestor node
     if (leftAncestor && rightAncestor) {
         //printf("\nIn getCost LCA:\n");
@@ -292,18 +338,28 @@ BTNode *getCost(BTNode *root, int nodeV1, int nodeV2, int *distOfV1FromRoot, int
     else {
         return rightAncestor;
     }
+    */
 }
 
 int twoNodesCost(BTNode *node, int nodeV1, int nodeV2) {
     int distOfV1FromRoot = -1;
     int distOfV2FromRoot = -1;
     int distOfV1V2 = 0;
+    int costOfV1V2 = 0;
     
-    BTNode *lowestCommonAncestor = getCost(node, nodeV1, nodeV2, &distOfV1FromRoot, &distOfV2FromRoot, &distOfV1V2, 1);
-    printf("distOfV1FromRoot: %d\n", distOfV1FromRoot);
-    printf("distOfV2FromRoot: %d\n", distOfV2FromRoot);
-    printf("distOfV1V2: %d\n", distOfV1V2);
+    BTNode *lowestCommonAncestor = getLCA(node, nodeV1, nodeV2, &distOfV1FromRoot, &distOfV2FromRoot, &distOfV1V2, 1);
+    //printf("distOfV1FromRoot: %d\n", distOfV1FromRoot);
+    //printf("distOfV2FromRoot: %d\n", distOfV2FromRoot);
+    //printf("distOfV1V2: %d\n", distOfV1V2);
     
+    if (lowestCommonAncestor == NULL) {
+        return 0;
+    }
+    
+    costOfV1V2 = getCost(lowestCommonAncestor, &nodeV1, &nodeV2) + lowestCommonAncestor->nodeV;
+    return costOfV1V2;
+    
+    /*
     // If both nodeV1 & nodeV2 present in binary tree
     if ((distOfV1FromRoot != -1) && (distOfV2FromRoot != -1)) {
         printf("Case 1\n");
@@ -326,4 +382,5 @@ int twoNodesCost(BTNode *node, int nodeV1, int nodeV2) {
  
     // return -1 if neither nodeV1 or nodeV2 is not in tree
     return -1;
+    */
 }
