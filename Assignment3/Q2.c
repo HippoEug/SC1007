@@ -258,13 +258,16 @@ int getCost(BTNode *lowestCommonAncestor, int *nodeV1, int *nodeV2) {
         return 0;
     }
  
+    // Traverse left tree
     if (lowestCommonAncestor->left != NULL) {
         sumOfCost = getCost(lowestCommonAncestor->left, nodeV1, nodeV2) + sumOfCost;
     }
+    // Traverse right tree
     if (lowestCommonAncestor->right != NULL) {
         sumOfCost = getCost(lowestCommonAncestor->right, nodeV1, nodeV2) + sumOfCost;
     }
  
+    // Update sumOfCost, nodeV1, nodeV2
     if (lowestCommonAncestor->left != NULL && lowestCommonAncestor->left->nodeV == *nodeV1) {
         sumOfCost = (lowestCommonAncestor->left->nodeV + sumOfCost);
         *nodeV1 = lowestCommonAncestor->nodeV;
@@ -274,6 +277,7 @@ int getCost(BTNode *lowestCommonAncestor, int *nodeV1, int *nodeV2) {
         *nodeV2 = lowestCommonAncestor->nodeV;
     }
 
+    // Update sumOfCost, nodeV1, nodeV2
     if (lowestCommonAncestor->right != NULL && lowestCommonAncestor->right->nodeV == *nodeV1) {
         sumOfCost = (lowestCommonAncestor->right->nodeV + sumOfCost);
         *nodeV1 = lowestCommonAncestor->nodeV;
@@ -347,6 +351,7 @@ int twoNodesCost(BTNode *node, int nodeV1, int nodeV2) {
     int distOfV1V2 = 0;
     int costOfV1V2 = 0;
     
+    // Get lowest common ancestor between nodeV1 and nodeV2 if given tree root node, other params not required
     BTNode *lowestCommonAncestor = getLCA(node, nodeV1, nodeV2, &distOfV1FromRoot, &distOfV2FromRoot, &distOfV1V2, 1);
     //printf("distOfV1FromRoot: %d\n", distOfV1FromRoot);
     //printf("distOfV2FromRoot: %d\n", distOfV2FromRoot);
@@ -356,7 +361,8 @@ int twoNodesCost(BTNode *node, int nodeV1, int nodeV2) {
         return 0;
     }
     
-    costOfV1V2 = getCost(lowestCommonAncestor, &nodeV1, &nodeV2) + lowestCommonAncestor->nodeV;
+    // Get sum of node values including lowest common ancestor
+    costOfV1V2 = lowestCommonAncestor->nodeV + getCost(lowestCommonAncestor, &nodeV1, &nodeV2);
     return costOfV1V2;
     
     /*
