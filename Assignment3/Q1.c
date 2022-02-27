@@ -28,6 +28,7 @@
 //
 // Credits: https://www.geeksforgeeks.org/building-expression-tree-from-prefix-expression/
 // Credits: https://stackoverflow.com/questions/66828074/creating-a-recursive-function-that-creates-a-expression-tree-from-a-prefix-expre
+// Credits: https://www.geeksforgeeks.org/evaluation-of-expression-tree/
 //
 
 #include <stdio.h>
@@ -52,6 +53,8 @@ typedef struct _stack {
     int size;
     StackNode *head;
 } Stack;
+
+
 
 void deleteTree(BTNode **root);
 void createExpTree(BTNode **root, char *prefix);
@@ -139,57 +142,17 @@ void createExpTree(BTNode **root, char *prefix) {
     
     *root = (BTNode*)malloc(sizeof(BTNode));
     
-    if( isdigit(splitString[0]) ) {             // external nodes (= leaves) are operands
+    // Operands, external nodes
+    if(isdigit(splitString[0])) {
         (*root)->item = atoi(splitString);
-        (*root)->left = NULL;
-        (*root)->right = NULL;
+        (*root)->left = (*root)->right = NULL;
     }
-    else {                                // internal nodes are binary operators
+    // Operators, internal nodes
+    else {
         (*root)->item = splitString[0];
-        createExpTree(&(*root)->left, NULL);  // continue using the same string prefix
-        createExpTree(&(*root)->right, NULL); // continue using the same string prefix
+        createExpTree(&(*root)->left, NULL);
+        createExpTree(&(*root)->right, NULL);
     }
-    
-    /*
-    while (1) {
-        char *q = "null";
-        
-        printf ("hello %s\n", pch);
-        
-        
-        if (*root == NULL) {
-            //printf("HELLO HERE\n");
-            BTNode *newNode = (BTNode*)malloc(sizeof(BTNode));
-            newNode->item = *pch;
-            newNode->left = newNode->right = NULL;
-            *root = newNode;
-        }
-        else {
-            //printf("HELLO AGSAIN\n");
-            // Checking for operand
-            if (isdigit(*pch)) {
-                printf("isDigit pch: %c \n", *pch);
-                return pch;
-            }
-            //if (*pch >= '0' && *pch <= '9') {
-            //    return pch;
-            //}
-            
-            // Build left subtree
-            printf("????\n");
-            q = createExpTreeRecursive(&(*root)->left, pch + 1);
-            printf("!!!!\n");
-            // Build right subtree
-            q = createExpTreeRecursive(&(*root)->right, q + 1);
-            
-            return q;
-        }
-        
-        pch = strtok (NULL, " ");
-    }
-    
-    //return 0;
-     */
 }
 
 // print Infix
@@ -228,83 +191,27 @@ void printTreePostfix(BTNode *node) {
     }
 }
 
-void convertToString(BTNode *node, char *str[]) {
-    // Convert to postfix code using printpostfix code
-    // Then evaluate function using Lab 2 Q3 solution
-    
-    char temp = "";
-    
-    if (node == NULL) {
-        return;
-    }
-    
-    convertToString(node->left, str);
-    convertToString(node->right, str);
-    // External node
-    if ((node->left == NULL) && (node->right == NULL)) {
-        //printf("%d ", node->item);
-        sprintf(temp, "%d", node->item);
-        strcat(str, temp);
-    }
-    // Internal node
-    else {
-        //printf("%c ", (char)node->item);
-        //temp[2] = node->item;
-        sprintf(temp, "%c", (char)node->item);
-        strcat(str, temp);
-    }
-}
-
 double computeTree(BTNode *node) {
-    char str[1024] = "";
-    
-    convertToString(node, str);
-    printf("hello %c", str);
-    return 0;
-}
-
-/*
-double exePostfix(char* postfix)
-{
-    Stack s;
-    s.head = NULL;
-    s.size = 0;
-
-    int i=0;
-    double op1, op2;
-    char c;
-    double result;
-    while(postfix[i]!='\0')
-    {
-        c = postfix[i++];
-        if(c=='*' || c=='/' || c=='+' || c=='-')
-        {
-
-            op1 = peek(s); pop(&s);
-            op2 = peek(s); pop(&s);
-
-            switch(c)
-            {
-            case '*':
-                push(&s, op2*op1);
-                break;
-            case '/':
-                push(&s, op2/op1);
-                break;
-            case '+':
-                push(&s, op2+op1);
-                break;
-            case '-':
-                push(&s, op2-op1);
-            }
-        }
-        else
-            push(&s, (c-'0')) ;
-
+    if (node == NULL) {
+        return 0;
     }
 
-   result = peek(s); pop(&s);
-   return result;
+    // Check for operands
+    if ((node->left == NULL) && (node->right == NULL)) {
+        return (node->item);
+    }
 
+    double leftSubTreeSol = computeTree(node->left);
+    double rightSubTreeSol = computeTree(node->right);
+
+    if (node->item == '+') {
+        return (leftSubTreeSol + rightSubTreeSol);
+    }
+    if (node->item == '-') {
+        return (leftSubTreeSol - rightSubTreeSol);
+    }
+    if (node->item == '*') {
+        return (leftSubTreeSol * rightSubTreeSol);
+    }
+    return (leftSubTreeSol / rightSubTreeSol);
 }
- */
