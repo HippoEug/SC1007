@@ -56,6 +56,8 @@ BTNode *createNode(int item);
 void printBTNode(BTNode *root, int space, int left);
 void deleteTree(BTNode **root);
 
+int getTreeSize(BTNode* root);
+int ifBST(BTNode *root, BTNode *left, BTNode *right);
 BTNode *findLargestBST(BTNode *root);
 
 int main() {
@@ -132,10 +134,10 @@ void printBTNode(BTNode *root, int space, int left) {
       if (root != NULL) {
           int i;
           for (i = 0; i < space-1; i++) {
-                 printf("|\t");
+              printf("|\t");
           }
 
-          if (i < space){
+          if (i < space) {
               if (left == 1) {
                   printf("|---");
               }
