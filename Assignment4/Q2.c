@@ -161,8 +161,8 @@ int main() {
     printf("\n");
     
     printf("The corrected binary search tree:\n");
-    //BSTCorrection(root);
-    correctBST(root);
+    BSTCorrection(root);
+    //correctBST(root);
 
     printBTNode(root,0,0);
     deleteTree(&root);
@@ -290,16 +290,33 @@ int isEmptyStack (Stack s) {
     }
 }
 
-/*
 void BSTCorrection(BTNode *root) {
+    static BTNode *originalRoot = NULL;
 
-
-// Write your code here
-
-
+    static BTNode *prev = NULL;
+    
+    static BTNode *firstError = NULL;
+    static BTNode *secondError = NULL;
+    static BTNode *parentOfError = NULL;
+    
+    static int leftVal = -1;
+    static int rightVal = -1;
+    int left = leftVal;
+    int right = rightVal;
+    
+    if (root == NULL) {
+        return;
+    }
+    
+    if (originalRoot == NULL) {
+        originalRoot = root;
+    }
+    
+    if ()
 }
- */
 
+
+/*
 void BSTCorrection(BTNode* root)
 {
     static BTNode *error1, *error2, *ogroot, *errorparent, *prev;
@@ -382,6 +399,24 @@ void BSTCorrection(BTNode* root)
 
 }
 
+ 
+ void correctBST( struct node* root )
+ {
+     // Initialize pointers needed for correctBSTUtil()
+     struct node *first, *middle, *last, *prev;
+     first = middle = last = prev = NULL;
+  
+     // Set the pointers to find out two nodes
+     correctBSTUtil( root, &first, &middle, &last, &prev );
+  
+     // Fix (or correct) the tree
+     if( first && last )
+         swap( &(first->data), &(last->data) );
+     else if( first && middle ) // Adjacent nodes swapped
+         swap( &(first->data), &(middle->data) );
+  
+     // else nodes have not been swapped, passed tree is really BST.
+ }
 
 
  
@@ -422,24 +457,4 @@ void correctBSTUtil( struct node* root, struct node** first,
         correctBSTUtil( root->right, first, middle, last, prev );
     }
 }
- 
-// A function to fix a given BST where two nodes are swapped.  This
-// function uses correctBSTUtil() to find out two nodes and swaps the
-// nodes to fix the BST
-void correctBST( struct node* root )
-{
-    // Initialize pointers needed for correctBSTUtil()
-    struct node *first, *middle, *last, *prev;
-    first = middle = last = prev = NULL;
- 
-    // Set the pointers to find out two nodes
-    correctBSTUtil( root, &first, &middle, &last, &prev );
- 
-    // Fix (or correct) the tree
-    if( first && last )
-        swap( &(first->data), &(last->data) );
-    else if( first && middle ) // Adjacent nodes swapped
-        swap( &(first->data), &(middle->data) );
- 
-    // else nodes have not been swapped, passed tree is really BST.
-}
+ */
