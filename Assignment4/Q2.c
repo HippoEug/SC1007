@@ -290,7 +290,6 @@ int isEmptyStack (Stack s) {
     }
 }
 
-
 void BSTCorrection(BTNode *root) {
     static BTNode *originalRoot = NULL;
 
@@ -359,11 +358,9 @@ void BSTCorrection(BTNode *root) {
             
         }
         
-        firstError = NULL;
-        secondError = NULL;
-        leftVal = -1;
-        rightVal = -1;
-        return BSTCorrection(originalRoot);
+        firstError = secondError = NULL;
+        leftVal = rightVal = -1;
+        //return BSTCorrection(originalRoot);
     }
 }
 
