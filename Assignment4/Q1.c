@@ -122,7 +122,7 @@ int main() {
 }
 
 BTNode *createNode(int item) {
-    BTNode* node = (BTNode*)malloc(sizeof(BTNode));
+    BTNode* node = (BTNode*) malloc(sizeof(BTNode));
     node->item = item;
     node->left = node->right = NULL;
     return node;
