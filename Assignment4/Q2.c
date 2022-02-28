@@ -57,6 +57,37 @@ typedef struct _stack {
     StackNode *top;
 } Stack;
 
+
+
+
+struct node
+{
+    int data;
+    struct node *left, *right;
+};
+ 
+// A utility function to swap two integers
+void swap( int* a, int* b )
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+ 
+/* Helper function that allocates a new node with the
+   given data and NULL left and right pointers. */
+struct node* newNode(int data)
+{
+    struct node* node = (struct node *)malloc(sizeof(struct node));
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return(node);
+}
+
+
+
+
 //Prototypes of Interface functions for Queue structure
 void enqueue(Queue *qPtr, BTNode *data);
 int dequeue(Queue *qPtr);
@@ -74,6 +105,8 @@ BTNode *peek(Stack s);
 int isEmptyStack(Stack s);
 
 void BSTCorrection(BTNode *root);
+
+void correctBST(struct node *root);
 
 int main() {
     BTNode *root = NULL;
@@ -128,7 +161,8 @@ int main() {
     printf("\n");
     
     printf("The corrected binary search tree:\n");
-    BSTCorrection(root);
+    //BSTCorrection(root);
+    correctBST(root);
 
     printBTNode(root,0,0);
     deleteTree(&root);
@@ -256,10 +290,156 @@ int isEmptyStack (Stack s) {
     }
 }
 
+/*
 void BSTCorrection(BTNode *root) {
 
 
 // Write your code here
 
 
+}
+ */
+
+void BSTCorrection(BTNode* root)
+{
+    static BTNode *error1, *error2, *ogroot, *errorparent, *prev;
+    int debug=0;
+    //static left and right stores the latest values to check if node is BST
+    static int left=-1, right=-1;
+    //save l and r to the current recursion iteration
+    int l=left,r=right;
+    
+    if(root==NULL) return;
+
+    //stores original root as static var
+    if(ogroot==NULL) ogroot = root;
+    
+    //Check if node follows BST
+    if((left>=0 && left>=root->item)||(right>=0 && right<=root->item)){
+        if(debug) printf("Error in node %d\n",root->item);
+
+        //if first error, store node and its parents
+        if(error1==NULL){
+            error1=root;
+            errorparent=prev;
+        }
+        //if second error, store node
+        else error2 = root;
+
+        return;
+    }
+    
+    
+    //preorder traversial
+
+    //update or store temporary values
+    prev = root;
+    right = root->item;
+    BSTCorrection(root->left);
+    prev = root;
+    left = root->item;
+    right = r;
+    BSTCorrection(root->right);
+
+
+    //error handling after all nodes have been checked for errors
+    int temp;
+
+    //conditional statement so swapping only executes once
+    if(root==ogroot && error1!=NULL){
+        //Case 1: error nodes are adjacent but only 1 is found
+        if(error2==NULL){
+            if(debug) printf("only error1 found\n");
+            temp = errorparent->item;
+            errorparent->item = error1->item;
+            error1->item=temp;
+        }
+        //Case 2: error nodes are adjacent and both are found
+        else if(error1->right==error2 || error1->left==error2){
+            if(debug) printf("error2 is child of error1\n");
+            temp = errorparent->item;
+            errorparent->item = error1->item;
+            error1->item=temp;
+        }
+
+        
+        //Case 3: error nodes are not adjacent
+        else{
+            if(debug) printf("error1 and error2 found\n");
+            temp = error2->item;
+            error2->item = error1->item;
+            error1->item = temp;
+            
+        }
+        
+        error1=NULL;
+        error2=NULL;
+        left=-1;
+        right=-1;
+        //repeats whole thing to see if there is still an error
+        return BSTCorrection(ogroot);
+    }
+
+}
+
+
+
+ 
+// This function does inorder traversal to find out the two swapped nodes.
+// It sets three pointers, first, middle and last.  If the swapped nodes are
+// adjacent to each other, then first and middle contain the resultant nodes
+// Else, first and last contain the resultant nodes
+void correctBSTUtil( struct node* root, struct node** first,
+                     struct node** middle, struct node** last,
+                     struct node** prev )
+{
+    if( root )
+    {
+        // Recur for the left subtree
+        correctBSTUtil( root->left, first, middle, last, prev );
+ 
+        // If this node is smaller than the previous node, it's violating
+        // the BST rule.
+        if (*prev && root->data < (*prev)->data)
+        {
+            // If this is first violation, mark these two nodes as
+            // 'first' and 'middle'
+            if ( !*first )
+            {
+                *first = *prev;
+                *middle = root;
+            }
+ 
+            // If this is second violation, mark this node as last
+            else
+                *last = root;
+        }
+ 
+        // Mark this node as previous
+        *prev = root;
+ 
+        // Recur for the right subtree
+        correctBSTUtil( root->right, first, middle, last, prev );
+    }
+}
+ 
+// A function to fix a given BST where two nodes are swapped.  This
+// function uses correctBSTUtil() to find out two nodes and swaps the
+// nodes to fix the BST
+void correctBST( struct node* root )
+{
+    // Initialize pointers needed for correctBSTUtil()
+    struct node *first, *middle, *last, *prev;
+    first = middle = last = prev = NULL;
+ 
+    // Set the pointers to find out two nodes
+    correctBSTUtil( root, &first, &middle, &last, &prev );
+ 
+    // Fix (or correct) the tree
+    if( first && last )
+        swap( &(first->data), &(last->data) );
+    else if( first && middle ) // Adjacent nodes swapped
+        swap( &(first->data), &(middle->data) );
+ 
+    // else nodes have not been swapped, passed tree is really BST.
 }
