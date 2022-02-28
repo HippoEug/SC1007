@@ -340,7 +340,7 @@ void BSTCorrection(BTNode *root) {
 // In-order Traversal
 void BSTCorrectionRecursive(BTNode *root, BTNode **previousNode, BTNode **firstNode, BTNode **middleNode, BTNode **lastNode) {
     if (root) {
-        // Recur for the left subtree
+        // Recursion for left subtree
         BSTCorrectionRecursive(root->left, previousNode, firstNode, middleNode, lastNode);
 
         // Check if Binary Search Tree is Invalid or follows Binary Search Tree Convention
@@ -358,10 +358,9 @@ void BSTCorrectionRecursive(BTNode *root, BTNode **previousNode, BTNode **firstN
                 *lastNode = root;
             }
         }
-        
-        // Mark this node as previous
         *previousNode = root;
-        // Recur for the right subtree
+        
+        // Recursion for right subtree
         BSTCorrectionRecursive(root->right, previousNode, firstNode, middleNode, lastNode);
     }
 }
