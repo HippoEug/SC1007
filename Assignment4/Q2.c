@@ -26,6 +26,8 @@
 // |___6
 // |        |___7
 //
+// Credits: https://www.geeksforgeeks.org/fix-two-swapped-nodes-of-bst/
+//
 
 #include <stdio.h>
 #include <stdlib.h>
