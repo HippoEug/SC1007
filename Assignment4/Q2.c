@@ -290,6 +290,8 @@ int isEmptyStack (Stack s) {
     }
 }
 
+
+/*
 void BSTCorrection(BTNode *root) {
     static BTNode *originalRoot = NULL;
 
@@ -363,65 +365,64 @@ void BSTCorrection(BTNode *root) {
         //return BSTCorrection(originalRoot);
     }
 }
+*/
 
 
 
- /*
- void correctBST( struct node* root )
- {
-     // Initialize pointers needed for correctBSTUtil()
-     struct node *first, *middle, *last, *prev;
-     first = middle = last = prev = NULL;
-  
-     // Set the pointers to find out two nodes
-     correctBSTUtil( root, &first, &middle, &last, &prev );
-  
-     // Fix (or correct) the tree
-     if( first && last )
-         swap( &(first->data), &(last->data) );
-     else if( first && middle ) // Adjacent nodes swapped
-         swap( &(first->data), &(middle->data) );
-  
-     // else nodes have not been swapped, passed tree is really BST.
- }
-
-
- 
 // This function does inorder traversal to find out the two swapped nodes.
 // It sets three pointers, first, middle and last.  If the swapped nodes are
 // adjacent to each other, then first and middle contain the resultant nodes
 // Else, first and last contain the resultant nodes
-void correctBSTUtil( struct node* root, struct node** first,
-                     struct node** middle, struct node** last,
-                     struct node** prev )
-{
-    if( root )
-    {
-        // Recur for the left subtree
-        correctBSTUtil( root->left, first, middle, last, prev );
- 
-        // If this node is smaller than the previous node, it's violating
-        // the BST rule.
-        if (*prev && root->data < (*prev)->data)
-        {
-            // If this is first violation, mark these two nodes as
-            // 'first' and 'middle'
-            if ( !*first )
-            {
-                *first = *prev;
-                *middle = root;
-            }
- 
-            // If this is second violation, mark this node as last
-            else
-                *last = root;
-        }
- 
-        // Mark this node as previous
-        *prev = root;
- 
-        // Recur for the right subtree
-        correctBSTUtil( root->right, first, middle, last, prev );
-    }
+void BSTCorrectionRecursive(BTNode *root, BTNode **previousNode, BTNode **firstNode, BTNode **middleNode, BTNode **lastNode) {
+    if (root) {
+       // Recur for the left subtree
+       BSTCorrectionRecursive(root->left, previousNode, firstNode, middleNode, lastNode);
+
+       // If this node is smaller than the previous node, it's violating
+       // the BST rule.
+       if ((*previousNode) && ((root->item) < (*previousNode)->item))
+       {
+           // If this is first violation, mark these two nodes as
+           // 'first' and 'middle'
+           if (!*firstNode)
+           {
+               *firstNode = *previousNode;
+               *middleNode = root;
+           }
+
+           // If this is second violation, mark this node as last
+           else
+               *lastNode = root;
+       }
+
+       // Mark this node as previous
+       *previousNode = root;
+
+       // Recur for the right subtree
+        BSTCorrectionRecursive(root->right, previousNode, firstNode, middleNode, lastNode);
+   }
 }
-*/
+
+
+void BSTCorrection(BTNode *root) {
+    static BTNode *firstNode = NULL;
+    static BTNode *middleNode = NULL;
+    static BTNode *lastNode = NULL;
+    static BTNode *previousNode = NULL;
+  
+    // Find the wrong nodes
+    BSTCorrectionRecursive(root, &previousNode, &firstNode, &middleNode, &lastNode);
+  
+    // Fixing/Swapping the two errors on tree
+    if(firstNode && lastNode) {
+        int temp = firstNode->item;
+        firstNode->item = lastNode->item;
+        lastNode->item = temp;
+        
+    }
+    else if (firstNode && middleNode) {
+        int temp = firstNode->item;
+        firstNode->item = middleNode->item;
+        middleNode->item = temp;
+    }
+ }
