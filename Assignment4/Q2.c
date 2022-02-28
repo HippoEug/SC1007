@@ -290,10 +290,12 @@ int isEmptyStack (Stack s) {
     }
 }
 
+
 void BSTCorrection(BTNode *root) {
     static BTNode *originalRoot = NULL;
 
     static BTNode *prev = NULL;
+    int tempVal = 0;
     
     static BTNode *firstError = NULL;
     static BTNode *secondError = NULL;
@@ -312,94 +314,62 @@ void BSTCorrection(BTNode *root) {
         originalRoot = root;
     }
     
-    if ()
-}
-
-
-/*
-void BSTCorrection(BTNode* root)
-{
-    static BTNode *error1, *error2, *ogroot, *errorparent, *prev;
-    int debug=0;
-    //static left and right stores the latest values to check if node is BST
-    static int left=-1, right=-1;
-    //save l and r to the current recursion iteration
-    int l=left,r=right;
-    
-    if(root==NULL) return;
-
-    //stores original root as static var
-    if(ogroot==NULL) ogroot = root;
-    
-    //Check if node follows BST
-    if((left>=0 && left>=root->item)||(right>=0 && right<=root->item)){
-        if(debug) printf("Error in node %d\n",root->item);
-
-        //if first error, store node and its parents
-        if(error1==NULL){
-            error1=root;
-            errorparent=prev;
+    // Check if Binary Search Tree is Invalid or follows Binary Search Tree Convention
+    // ie 18 on the left of 15, but 18 > 15
+    if ((left >= 0 && left >= root->item) || (right >= 0 && right <= root->item)) {
+        if (firstError == NULL) {
+            firstError = root;
+            parentOfError = prev;
         }
-        //if second error, store node
-        else error2 = root;
-
+        else {
+            secondError = root;
+        }
+        
         return;
     }
     
-    
-    //preorder traversial
-
-    //update or store temporary values
+    // Pre-order traversal
+    rightVal = root->item;
     prev = root;
-    right = root->item;
     BSTCorrection(root->left);
+    leftVal = root->item;
     prev = root;
-    left = root->item;
-    right = r;
+    rightVal = right;
     BSTCorrection(root->right);
-
-
-    //error handling after all nodes have been checked for errors
-    int temp;
-
-    //conditional statement so swapping only executes once
-    if(root==ogroot && error1!=NULL){
-        //Case 1: error nodes are adjacent but only 1 is found
-        if(error2==NULL){
-            if(debug) printf("only error1 found\n");
-            temp = errorparent->item;
-            errorparent->item = error1->item;
-            error1->item=temp;
+    
+    // Fixing the error
+    if ((firstError != NULL) && (root == originalRoot)) {
+        // Only 1 error found, adjacent error nodes
+        if (secondError == NULL) {
+            tempVal = parentOfError->item;
+            parentOfError->item = firstError->item;
+            firstError->item = tempVal;
         }
-        //Case 2: error nodes are adjacent and both are found
-        else if(error1->right==error2 || error1->left==error2){
-            if(debug) printf("error2 is child of error1\n");
-            temp = errorparent->item;
-            errorparent->item = error1->item;
-            error1->item=temp;
+        // Both errors found, adjacent error nodes
+        else if ((firstError->left == secondError) || (firstError->right == secondError)) {
+            tempVal = parentOfError->item;
+            parentOfError->item = firstError->item;
+            firstError->item = tempVal;
         }
-
-        
-        //Case 3: error nodes are not adjacent
-        else{
-            if(debug) printf("error1 and error2 found\n");
-            temp = error2->item;
-            error2->item = error1->item;
-            error1->item = temp;
+        // Error nodes not adjacent
+        else {
+            tempVal = secondError->item;
+            secondError->item = firstError->item;
+            firstError->item = tempVal;
             
         }
         
-        error1=NULL;
-        error2=NULL;
-        left=-1;
-        right=-1;
-        //repeats whole thing to see if there is still an error
-        return BSTCorrection(ogroot);
+        firstError = NULL;
+        secondError = NULL;
+        leftVal = -1;
+        rightVal = -1;
+        return BSTCorrection(originalRoot);
     }
-
 }
 
- 
+
+
+ /*
  void correctBST( struct node* root )
  {
      // Initialize pointers needed for correctBSTUtil()
@@ -457,4 +427,4 @@ void correctBSTUtil( struct node* root, struct node** first,
         correctBSTUtil( root->right, first, middle, last, prev );
     }
 }
- */
+*/
