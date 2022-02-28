@@ -57,37 +57,6 @@ typedef struct _stack {
     StackNode *top;
 } Stack;
 
-
-
-
-struct node
-{
-    int data;
-    struct node *left, *right;
-};
- 
-// A utility function to swap two integers
-void swap( int* a, int* b )
-{
-    int t = *a;
-    *a = *b;
-    *b = t;
-}
- 
-/* Helper function that allocates a new node with the
-   given data and NULL left and right pointers. */
-struct node* newNode(int data)
-{
-    struct node* node = (struct node *)malloc(sizeof(struct node));
-    node->data = data;
-    node->left = NULL;
-    node->right = NULL;
-    return(node);
-}
-
-
-
-
 //Prototypes of Interface functions for Queue structure
 void enqueue(Queue *qPtr, BTNode *data);
 int dequeue(Queue *qPtr);
@@ -167,6 +136,7 @@ int main() {
     printBTNode(root,0,0);
     deleteTree(&root);
 }
+
 BTNode *createNode(int item) {
     BTNode* node = (BTNode*) malloc(sizeof(BTNode));
     node->item = item;
@@ -367,62 +337,55 @@ void BSTCorrection(BTNode *root) {
 }
 */
 
-
-
-// This function does inorder traversal to find out the two swapped nodes.
-// It sets three pointers, first, middle and last.  If the swapped nodes are
-// adjacent to each other, then first and middle contain the resultant nodes
-// Else, first and last contain the resultant nodes
+// In-order Traversal
 void BSTCorrectionRecursive(BTNode *root, BTNode **previousNode, BTNode **firstNode, BTNode **middleNode, BTNode **lastNode) {
     if (root) {
-       // Recur for the left subtree
-       BSTCorrectionRecursive(root->left, previousNode, firstNode, middleNode, lastNode);
+        // Recur for the left subtree
+        BSTCorrectionRecursive(root->left, previousNode, firstNode, middleNode, lastNode);
 
-       // If this node is smaller than the previous node, it's violating
-       // the BST rule.
-       if ((*previousNode) && ((root->item) < (*previousNode)->item))
-       {
-           // If this is first violation, mark these two nodes as
-           // 'first' and 'middle'
-           if (!*firstNode)
-           {
-               *firstNode = *previousNode;
-               *middleNode = root;
-           }
-
-           // If this is second violation, mark this node as last
-           else
-               *lastNode = root;
-       }
-
-       // Mark this node as previous
-       *previousNode = root;
-
-       // Recur for the right subtree
+        // Check if Binary Search Tree is Invalid or follows Binary Search Tree Convention
+        // ie 18 on the left of 15, but 18 > 15
+        // If swapped nodes are adjacent, then first and middle contain the resultant nodes
+        // Else, first and last contain the resultant nodes
+        if ((*previousNode) && ((root->item) < (*previousNode)->item)) {
+            // If first violation, mark these two nodes as first and middle
+            if (*firstNode == NULL) {
+                *firstNode = *previousNode;
+                *middleNode = root;
+            }
+            // If second violation, mark this node as last
+            else {
+                *lastNode = root;
+            }
+        }
+        
+        // Mark this node as previous
+        *previousNode = root;
+        // Recur for the right subtree
         BSTCorrectionRecursive(root->right, previousNode, firstNode, middleNode, lastNode);
-   }
+    }
 }
 
 
 void BSTCorrection(BTNode *root) {
+    static BTNode *previousNode = NULL;
     static BTNode *firstNode = NULL;
     static BTNode *middleNode = NULL;
     static BTNode *lastNode = NULL;
-    static BTNode *previousNode = NULL;
   
     // Find the wrong nodes
     BSTCorrectionRecursive(root, &previousNode, &firstNode, &middleNode, &lastNode);
-  
+    
     // Fixing/Swapping the two errors on tree
-    if(firstNode && lastNode) {
-        int temp = firstNode->item;
-        firstNode->item = lastNode->item;
-        lastNode->item = temp;
-        
-    }
-    else if (firstNode && middleNode) {
+    if (firstNode && middleNode) {
         int temp = firstNode->item;
         firstNode->item = middleNode->item;
         middleNode->item = temp;
+        
+    }
+    else if (firstNode && lastNode) {
+        int temp = firstNode->item;
+        firstNode->item = lastNode->item;
+        lastNode->item = temp;
     }
  }
