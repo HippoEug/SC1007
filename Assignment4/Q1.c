@@ -19,6 +19,7 @@
 // |        |       |---40
 // |        |       |___60
 // |___79
+//
 // The largest binary search subtree:
 // 50
 // |---40
@@ -70,7 +71,7 @@ int main() {
     
     printf("Enter a list of numbers for a Binary Tree, terminated by any non-digit character: \n");
     while (scanf("%d",&item)) {
-        if (root==NULL) {
+        if (root == NULL) {
             if (item != -1) {
                 root = createNode(item);
                 enqueue(&q, root);
@@ -209,10 +210,60 @@ int isEmptyQueue(Queue q) {
     }
 }
 
+int getTreeSize(BTNode* root) {
+    if (root == NULL) {
+        return 0;
+    }
+    else {
+        return (getTreeSize(root->left) + getTreeSize(root->right) + 1);
+    }
+}
+
+int ifBST(BTNode *root, BTNode *left, BTNode *right) {
+    if (root == NULL) {
+        return 1;
+    }
+
+    // Check if Binary Search Tree is Invalid
+    // ie 18 on the left of 15, but 18 > 15
+    if ((left != NULL) && (left->item >= root->item)) {
+        return 0;
+    }
+    if ((right != NULL) && (right->item <= root->item)) {
+        return 0;
+    }
+
+    //recursively checks all children
+    return (ifBST(root->left, left, root) && ifBST(root->right, root, right));
+}
 
 BTNode *findLargestBST(BTNode *root) {
-// Write your code here
+    int leftTreeSize = 0;
+    int rightTreeSize = 0;
+    
+    if (root == NULL) {
+        return NULL;
+    }
 
+    BTNode *leftTraversal;
+    BTNode *rightTraversal;
 
+    // Post-order traversal
+    leftTraversal = findLargestBST(root->left);
+    rightTraversal = findLargestBST(root->right);
 
+    leftTreeSize = getTreeSize(leftTraversal);
+    rightTreeSize = getTreeSize(rightTraversal);
+    
+    // If node is Binary Search Tree
+    if (ifBST(root, NULL, NULL)) {
+        return root;
+    }
+    // Else return root of biggest subtree
+    else if (leftTreeSize >= rightTreeSize) {
+        return leftTraversal;
+    }
+    else {
+        return rightTraversal;
+    }
 }
