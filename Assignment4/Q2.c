@@ -337,32 +337,7 @@ void BSTCorrection(BTNode *root) {
 }
 */
 
-
-void BSTCorrection(BTNode *root) {
-    static BTNode *previousNode = NULL;
-    static BTNode *firstNode = NULL;
-    static BTNode *middleNode = NULL;
-    static BTNode *lastNode = NULL;
-  
-    // Find the wrong nodes
-    BSTCorrectionRecursive(root, &previousNode, &firstNode, &middleNode, &lastNode);
-    
-    // Fixing/Swapping the two errors on tree
-    if (firstNode && middleNode) {
-        int temp = firstNode->item;
-        firstNode->item = middleNode->item;
-        middleNode->item = temp;
-        
-    }
-    else if (firstNode && lastNode) {
-        int temp = firstNode->item;
-        firstNode->item = lastNode->item;
-        lastNode->item = temp;
-    }
- }
-
 // In-order Traversal
-
 void BSTCorrectionRecursive(BTNode *root, BTNode **previousNode, BTNode **firstNode, BTNode **middleNode, BTNode **lastNode) {
     if (root) {
         // Recursion for left subtree
@@ -387,5 +362,28 @@ void BSTCorrectionRecursive(BTNode *root, BTNode **previousNode, BTNode **firstN
         
         // Recursion for right subtree
         BSTCorrectionRecursive(root->right, previousNode, firstNode, middleNode, lastNode);
+    }
+}
+
+void BSTCorrection(BTNode *root) {
+    static BTNode *previousNode = NULL;
+    static BTNode *firstNode = NULL;
+    static BTNode *middleNode = NULL;
+    static BTNode *lastNode = NULL;
+  
+    // Find the wrong nodes
+    BSTCorrectionRecursive(root, &previousNode, &firstNode, &middleNode, &lastNode);
+    
+    // Fixing/Swapping the two errors on tree
+    if (firstNode && middleNode) {
+        int temp = firstNode->item;
+        firstNode->item = middleNode->item;
+        middleNode->item = temp;
+        
+    }
+    else if (firstNode && lastNode) {
+        int temp = firstNode->item;
+        firstNode->item = lastNode->item;
+        lastNode->item = temp;
     }
 }
