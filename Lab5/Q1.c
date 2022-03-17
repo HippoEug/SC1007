@@ -21,14 +21,14 @@ typedef struct _listnode {
 } ListNode;
 
 typedef struct _linkedlist {
-   int size;
-   ListNode *head;
+    int size;
+    ListNode *head;
 } HashTableNode;
 
 typedef struct _hashTable {
-   int hSize; //size of hash table
-   int nSize; //number of inserted keys
-   HashTableNode *Table;
+    int hSize; //size of hash table
+    int nSize; //number of inserted keys
+    HashTableNode *Table;
 } HashTable;
 
 int Hash(int,int);
@@ -41,7 +41,6 @@ void HashPrint(HashTable);
 
 int main() {
     int opt;
-    int size;
 
     int i;
     int key;
@@ -166,9 +165,11 @@ int HashInsert(HashTable *Q3HashPtr, int key) {
 void HashPrint(HashTable Q3Hash) {
     int i;
     ListNode *temp;
+    
     for(i = 0; i < Q3Hash.hSize; i++) {
         temp = Q3Hash.Table[i].head;
         printf("%d:  ", i);
+        
         while(temp != NULL) {
             printf("%d -> ", temp->key);
             temp = temp->next;
@@ -176,3 +177,4 @@ void HashPrint(HashTable Q3Hash) {
         printf("\n");
     }
 }
+
