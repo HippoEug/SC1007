@@ -10,3 +10,5 @@
 [Lab 4: Binary Search Trees (Week 7)](https://github.com/HippoEug/SC1007/tree/main/Lab4)
 
 [Lab 5: Hash Table & Graph Representation (Week 9)](https://github.com/HippoEug/SC1007/tree/main/Lab5)
+
+[Lab 6: BFS & DFS (Week 10)](https://github.com/HippoEug/SC1007/tree/main/Lab6)
