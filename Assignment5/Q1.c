@@ -56,15 +56,18 @@ int main() {
     printf("Enter the number of vertices:\n");
     scanf("%d", &g.V);
 
+    // Space allocation of adjacency matrix
     g.E = 0;
     g.adj.matrix = (int **)malloc(g.V*sizeof(int *));
     for (i = 0; i < g.V; i++) {
         g.adj.matrix[i] = (int *)malloc(g.V*sizeof(int));
     }
 
+    // Initializing adjacency matrix
     for (i=0; i<g.V; i++) {
-        for(j=0; j < g.V; j++)
+        for(j=0; j < g.V; j++) {
             g.adj.matrix[i][j] = 0;
+        }
     }
     g.type = ADJ_MATRIX;
 
@@ -73,10 +76,11 @@ int main() {
         degreeV[i]=0;
     }
 
+    // Filling in the adjacency matrix
     int V1, V2;
     printf("Enter two vertices which are adjacent to each other: (enter a to stop)\n");
     while (scanf("%d %d", &V1, &V2) == 2) {
-        if (V1 > 0 && V1 <= g.V && V2 > 0 && V2 <= g.V) {
+        if ((V1 > 0) && (V1 <= g.V) && (V2 > 0) && (V2 <= g.V)) {
             g.adj.matrix[V1-1][V2-1] = 1;
             g.adj.matrix[V2-1][V1-1] = 1;
             g.E++;
@@ -89,10 +93,8 @@ int main() {
 
 
     printGraphMatrix(g);
-
-    calDegreeV(g,degreeV);
-    
-    printDegreeV(degreeV,g.V);
+    calDegreeV(g, degreeV);
+    printDegreeV(degreeV, g.V);
 
     return 0;
 }
