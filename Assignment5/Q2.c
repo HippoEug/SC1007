@@ -14,6 +14,7 @@
 // 4 6
 // 5 3
 // 5 7
+// a
 //
 // Sample Output:
 //
@@ -60,18 +61,45 @@ int main() {
 
     g.E = 0;
     g.adj.list = (ListNode **) malloc(g.V*sizeof(ListNode *));
-    
+    for (i = 0; i < g.V; i++) {
+        g.adj.list[i] = NULL;
+    }
     g.type = ADJ_LIST;
 
     degreeV = (int *) malloc(g.V*sizeof(int));
     for (i=0; i<g.V; i++) {
         degreeV[i]=0;
     }
+    
+    // ADDING CHEAT CODE
+    // Space allocation of adjacency matrix
+    g.E = 0;
+    g.adj.matrix = (int **)malloc(g.V*sizeof(int *));
+    for (i = 0; i < g.V; i++) {
+        g.adj.matrix[i] = (int *)malloc(g.V*sizeof(int));
+    }
+
+    // Initializing adjacency matrix
+    for (i=0; i<g.V; i++) {
+        for(j=0; j < g.V; j++) {
+            g.adj.matrix[i][j] = 0;
+        }
+    }
+    g.type = ADJ_MATRIX;
+    // END OF CHEAT CODE
 
     int V1, V2;
     printf("Enter two vertices which are adjacent to each other (enter a to stop):\n");
     while (scanf("%d %d", &V1, &V2) == 2) {
         if ((V1 > 0) && (V1 <= g.V) && (V2 > 0) && (V2 <= g.V)) {
+            // START OF CHEAT CODE
+            g.adj.matrix[V1-1][V2-1] = 1;
+            g.adj.matrix[V2-1][V1-1] = 1;
+            g.E++;
+
+            // END OF CHEAT CODE
+            
+            /*
             i = V1-1;
             j = V2-1;
             if (g.adj.list[i] == NULL) {
@@ -97,6 +125,7 @@ int main() {
                 g.adj.list[j] = temp;
             }
             g.E++;
+            */
         }
         else {
             break;
@@ -104,7 +133,7 @@ int main() {
         printf("Enter two vertices which are adjacent to each other: (enter a to stop)\n");
     }
 
-    adjL2adjM(&g);
+    //adjL2adjM(&g);
     printGraphMatrix(g);
 
     return 0;
