@@ -1,0 +1,18 @@
+Enter the number of vertices:
+Enter two vertices which are adjacent to each other:
+Enter two vertices which are adjacent to each other:
+Enter two vertices which are adjacent to each other:
+Enter two vertices which are adjacent to each other:
+Enter two vertices which are adjacent to each other:
+Enter two vertices which are adjacent to each other:
+Enter two vertices which are adjacent to each other:
+Enter two vertices which are adjacent to each other:
+Enter a start vertex for DFS:
+0       1       1       0       0       0       0
+1       0       1       1       0       0       0
+1       1       0       0       1       1       0
+0       1       0       0       0       0       0
+0       0       1       0       0       0       0
+0       0       1       0       0       0       1
+0       0       0       0       0       1       0
+1 2 3 5 6 7 4 
