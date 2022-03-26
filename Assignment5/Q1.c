@@ -1,5 +1,5 @@
 //
-// Graph: Degree of a vertex
+// Graph: Degree of a Vertex
 //
 // Degree of vertex v in a graph is the number of edges incident on v
 // Write function calDegreeV() to compute number of degrees using adjacency matrix
@@ -15,6 +15,7 @@
 // 4 6
 // 5 3
 // 5 7
+// a
 //
 // Sample Output:
 //
@@ -44,6 +45,7 @@ typedef struct _graph {
 } Graph;
 
 void printGraphMatrix(Graph );
+void adjMatrixToAdjList(Graph *);
 void calDegreeV(Graph, int *);
 void printDegreeV(int *, int );
 
@@ -93,6 +95,7 @@ int main() {
 
 
     printGraphMatrix(g);
+    adjMatrixToAdjList(&g);
     calDegreeV(g, degreeV);
     printDegreeV(degreeV, g.V);
 
@@ -116,8 +119,67 @@ void printGraphMatrix(Graph g) {
     printf("\n");
 }
 
+void adjMatrixToAdjList(Graph *g) {
+    int i,j;
+    ListNode **list;
+    ListNode *temp;
+
+    if (g->type == ADJ_LIST) {
+        printf("Error");
+        return;
+    }
+    if (g->V <= 0) {
+        printf("Empty graph!");
+        return;
+    }
+
+    list = (ListNode **) malloc(g->V*sizeof(ListNode *));
+    for (i = 0; i < g->V; i++) {
+        list[i] = NULL;
+    }
+
+    for (i = 0; i < g->V; i++) {
+        for(j = 0; j < g->V; j++) {
+            if (g->adj.matrix[i][j] == 1) {
+                if (list[i] == NULL) {
+                    list[i] = (ListNode *)malloc(sizeof(ListNode));
+                    list[i]->vertex = j+1;
+                    list[i]->next = NULL;
+                    temp = list[i];
+                }
+                else {
+                    temp->next = (ListNode *)malloc(sizeof(ListNode));
+                    temp->next->vertex = j+1;
+                    temp->next->next = NULL;
+                    temp = temp->next;
+                }
+            }
+        }
+    }
+    
+    g->type = ADJ_LIST; //change representation form
+
+    //free adjMatrix
+    for(i = 0; i < g->V; i++) {
+        free(g->adj.matrix[i]);
+    }
+    free(g->adj.matrix);
+
+    g->adj.list = list;
+}
+
 void calDegreeV(Graph g, int *degreeV) {
-    // Write your code here
+    int i;
+    ListNode *temp = NULL;
+
+    for (i = 0; i < g.V; i++) {
+        degreeV[i] = 0;
+        ListNode *temp = g.adj.list[i];
+        while (temp != NULL) {
+            degreeV[i]++;
+            temp = temp->next;
+        }
+    }
 }
 
 void printDegreeV(int *degreeV, int V) {
