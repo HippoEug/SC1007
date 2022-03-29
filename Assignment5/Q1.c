@@ -38,8 +38,8 @@ struct GraphForm {
 };
 
 typedef struct _graph {
-    int V;
-    int E;
+    int V; // vertices
+    int E; // edges
     enum GraphType type;
     struct GraphForm adj;
 } Graph;
@@ -174,8 +174,11 @@ void calDegreeV(Graph g, int *degreeV) {
     int i;
     ListNode *temp = NULL;
 
+    // iterate through each vertices one by one
     for (i = 0; i < g.V; i++) {
         degreeV[i] = 0;
+     
+        // iterate through each vertex linked list to count
         ListNode *temp = g.adj.list[i];
         while (temp != NULL) {
             degreeV[i]++;
@@ -189,6 +192,7 @@ void calDegreeV(Graph g, int *degreeV) {
     ListNode *temp = NULL;
     degreeV[i] = 0;
 
+    // iterate through each vertices one by one
     for (i = 0; i < g.V; i++) {
         for (j = 0; j < g.V; j++) {
             ListNode *temp = g.adj.matrix[i][j];
