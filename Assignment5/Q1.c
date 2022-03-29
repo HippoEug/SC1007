@@ -95,7 +95,7 @@ int main() {
 
 
     printGraphMatrix(g);
-    adjMatrixToAdjList(&g);
+    //adjMatrixToAdjList(&g);
     calDegreeV(g, degreeV);
     printDegreeV(degreeV, g.V);
 
@@ -169,6 +169,8 @@ void adjMatrixToAdjList(Graph *g) {
 }
 
 void calDegreeV(Graph g, int *degreeV) {
+    /*
+    // Using Adjacency List to calculate Degrees
     int i;
     ListNode *temp = NULL;
 
@@ -177,6 +179,22 @@ void calDegreeV(Graph g, int *degreeV) {
         ListNode *temp = g.adj.list[i];
         while (temp != NULL) {
             degreeV[i]++;
+            temp = temp->next;
+        }
+    }
+    */
+    
+    // Using Adjacency Matrix to calculate Degrees
+    int i,j;
+    ListNode *temp = NULL;
+    degreeV[i] = 0;
+
+    for (i = 0; i < g.V; i++) {
+        for (j = 0; j < g.V; j++) {
+            ListNode *temp = g.adj.matrix[i][j];
+            if (temp != NULL) {
+                degreeV[i]++;
+            }
             temp = temp->next;
         }
     }
