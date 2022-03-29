@@ -37,8 +37,8 @@ struct GraphForm {
 };
 
 typedef struct _graph {
-    int V;
-    int E;
+    int V; // vertices
+    int E; // edges
     enum GraphType type;
     struct GraphForm adj;
 } Graph;
@@ -71,7 +71,8 @@ int main() {
         degreeV[i]=0;
     }
     
-    // ADDING CHEAT CODE
+    /*
+    // ADDING CHEAT CODE TO TAKE INPUT AS MATRIX
     // Space allocation of adjacency matrix
     g.E = 0;
     g.adj.matrix = (int **)malloc(g.V*sizeof(int *));
@@ -87,19 +88,20 @@ int main() {
     }
     g.type = ADJ_MATRIX;
     // END OF CHEAT CODE
+    */
 
     int V1, V2;
     printf("Enter two vertices which are adjacent to each other (enter a to stop):\n");
     while (scanf("%d %d", &V1, &V2) == 2) {
         if ((V1 > 0) && (V1 <= g.V) && (V2 > 0) && (V2 <= g.V)) {
-            // START OF CHEAT CODE
+            /*
+            // START OF CHEAT CODE TO TAKE INPUT AS MATRIX
             g.adj.matrix[V1-1][V2-1] = 1;
             g.adj.matrix[V2-1][V1-1] = 1;
             g.E++;
-
             // END OF CHEAT CODE
+            */
             
-            /*
             i = V1-1;
             j = V2-1;
             if (g.adj.list[i] == NULL) {
@@ -125,7 +127,6 @@ int main() {
                 g.adj.list[j] = temp;
             }
             g.E++;
-            */
         }
         else {
             break;
@@ -133,10 +134,8 @@ int main() {
         printf("Enter two vertices which are adjacent to each other: (enter a to stop)\n");
     }
 
-    //adjL2adjM(&g);
+    adjL2adjM(&g);
     printGraphMatrix(g);
-
-    return 0;
 }
 
 void printGraphMatrix(Graph g) {
@@ -155,10 +154,47 @@ void printGraphMatrix(Graph g) {
 }
 
 void adjL2adjM(Graph *g) {
-    
-    // add your code here
+    int i, j;
+    int **matrix;
+    ListNode *tempList = NULL;
 
-    g->type = ADJ_MATRIX;
+    // if type of graph is already matrix
+    if (g->type == ADJ_MATRIX) {
+        printf("Error");
+        return;
+    }
+
+    // if number of vertices less than or equals zero
+    if (g->V <= 0) {
+        printf("Empty graph!");
+        return;
+    }
+
+    // Refering to Lab5 to init adjMatrix
+    matrix = (int **)malloc(g->V*sizeof(ListNode*));
+    for (i = 0; i < g->V; i++) {
+        matrix[i] = (int *)malloc(g->V*sizeof(int));
+    }
+    for (i = 0; i < g->V; i++) {
+        for (j = 0; j < g->V ;j++) {
+            matrix[i][j] = 0;
+        }
+    }
+    
+    // iterate through each vertex's linked list
+    for (i = 0; i < g->V; i++) {
+        // iterate through each vertex linked list (temp) to check
+        tempList = g->adj.list[i];
+        while (tempList != NULL) { // go through linked list for each vertex until end of linked list
+            //printf("tempList->vertex: %d, i+1: %d\n", tempList->vertex, i+1);
+            matrix[(tempList->vertex)-1][i] = 1;
+            matrix[i][(tempList->vertex)-1] = 1;
+            tempList = tempList->next;
+        }
+    }
+
+    g->adj.matrix = matrix;
+    g->type = ADJ_MATRIX; // change representation form
 }
 
 
