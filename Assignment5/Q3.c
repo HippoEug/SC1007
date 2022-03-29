@@ -1,20 +1,20 @@
 //
-// Graph Representation: Adjacency List to Adjacency Matrix
+// Hash Table: Delete a Key
 //
-// Convert an adjacency list to an adjacency matrix for an undirected graph
+// Write a function to delete a key in a closed addressing hash table with modulo hash
+// Function returns 1 if deletion is successful, 0 if the deletion is not successful
 //
 // Sample Input:
-// 7
-// 1 2
-// 1 3
-// 2 3
-// 2 4
-// 4 1
-// 4 3
-// 4 6
-// 5 3
-// 5 7
-// a
+// 1
+// 3
+// 2
+// 1
+// 2
+// 2
+// 2
+// 3
+// 2
+// 4
 //
 // Sample Output:
 //
@@ -173,7 +173,7 @@ ListNode* HashSearch(HashTable Q3Hash, int key) {
     return NULL;
 }
 
-int HashInsert(HashTable* Q3HashPtr, int key) {
+int HashInsert(HashTable *Q3HashPtr, int key) {
     int index;
     ListNode *newNode;
 
@@ -197,26 +197,52 @@ int HashInsert(HashTable* Q3HashPtr, int key) {
     return 1; //insertion is done successfully
 }
 
-/*
-// function for deleting item from hash table
-void deleteItem(HashItem *table[], const char *key) {
-    HashItem **link = &table[hashCode(key)];
-
-    while (*link) {
-        HashItem *tmp = *link;
-        if (strcmp(tmp->key, key) == 0) {
-            *link = tmp->next;  // unlink the list node
-            freeItem(tmp);
+int HashDelete(HashTable *Q3HashPtr, int key) {
+    int index;
+    ListNode *currentNode;
+    ListNode *previousNode;
+    
+    // same as HashInsert function
+    if (HashSearch(*Q3HashPtr, key) == NULL) {
+        return 0;
+    }
+    if (Q3HashPtr->hSize != 0) {
+        index = Hash(key, Q3HashPtr->hSize);
+    }
+    
+    currentNode = Q3HashPtr->Table[index].head;
+    previousNode = Q3HashPtr->Table[index].head;
+    
+    // Iterate through the list with the hash key index
+    while (currentNode != NULL) {
+        // if currentNode is the head && is the key to delete
+        if ((currentNode == Q3HashPtr->Table[index].head) && (currentNode->key == key)) {
+            // Overwrite head with the next node in list
+            Q3HashPtr->Table[index].head = currentNode->next;
             break;
-        } else {
-            link = &(*link)->next;
+        }
+        // if current node NOT the head && is the key to delete
+        else if (currentNode->key == key) {
+            // connect previous node with the next node in list
+            previousNode->next = currentNode->next;
+            break;
+        }
+        // if current node is NOT the key to delete
+        else if (currentNode->next != NULL) {
+            // update previousNode && currentNode
+            previousNode = currentNode;
+            currentNode = currentNode->next;
+        }
+        // else if (currentNode->next == NULL)
+        else {
+            // Not successful in deleting
+            return 0;
         }
     }
-}
- */
-
-int HashDelete(HashTable *Q3HashPtr, int key) {
-    // Write your code here.
+    
+    Q3HashPtr->Table[index].size--;
+    Q3HashPtr->nSize--;
+    return 1;
 }
 
 void HashPrint(HashTable Q3Hash) {
