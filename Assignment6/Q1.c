@@ -3,7 +3,7 @@
 //
 // Based on DFS algorithm, determine if an undirected graph is connected or not
 // Vertices range from 1 to |V|
-// May assu,e the graph is always valid
+// May assume the graph is always valid
 //
 // Sample Input:
 // 5
@@ -96,7 +96,45 @@ int main() {
 }
 
 int Connected(Graph g) {
-    //write your code here
+    int vertexCounterVisited = 0;
+    int vertex;
+    
+    Stack s;
+    s.size = 0;
+    s.head = NULL;
+
+    push(&s, 1);
+    g.visited[0] = 1; // index 0 of graph set as visited
+    vertexCounterVisited++;
+        
+    while (isEmptyStack(s) != 1) { // while stack is not empty
+        int stopNode = 0; // no unvisited vertices flag
+        int w = peek(s); // peek the top of the stack
+        //printf("value of w: %d\n", w);
+        
+        for (vertex = 1; vertex <= g.V; vertex++) { // iterate through all the vertices one by one
+            // if adjacent based on adjacency matrix, and vertex yet visited
+            if (g.matrix[w-1][vertex-1] == 1 && g.visited[vertex-1] == 0) {
+                //printf("value of vertex: %d\n", vertex);
+                push(&s, vertex); // push vertex to stack
+                g.visited[vertex-1] = 1; // indicate that vertex already visited
+                vertexCounterVisited++;
+                stopNode = 1; // flag to indicate no need to pop, just push to stack
+                break;
+            }
+        }
+        if (stopNode == 0) { // flag to indicate there is no new vertice to visit since DFS
+            //printf("stopNode == 0 at vertex: %d\n", vertex);
+            pop(&s); // pop the top of the stack
+        }
+    }
+    
+    if (vertexCounterVisited == g.V) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
 }
 
 void printGraphMatrix(Graph g) {
