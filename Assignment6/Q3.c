@@ -123,7 +123,8 @@ int Connected(Graph g) {
             int stopNode = 0; // no unvisited vertices flag
             int w = peek(s); // peek the top of the stack
             
-            for (vertex = 1; vertex <= g.V; vertex++) {
+            for (vertex = 1; vertex <= g.V; vertex++) { // iterate through all the vertices one by one
+                // if adjacent based on adjacency matrix, and vertex yet visited
                 if (g.matrix[w-1][vertex-1] == 1 && g.visited[vertex-1] == 0) {
                     push(&s, vertex); // push vertex to stack
                     g.visited[vertex-1] = 1; // indicate that vertex already visited
