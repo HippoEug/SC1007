@@ -96,7 +96,7 @@ int main() {
 }
 
 int Connected(Graph g) {
-    int vertexCounterVisited = 0;
+    int vertexVisitedCounter = 0;
     int vertex;
     
     Stack s;
@@ -105,7 +105,7 @@ int Connected(Graph g) {
 
     push(&s, 1);
     g.visited[0] = 1; // index 0 of graph set as visited
-    vertexCounterVisited++;
+    vertexVisitedCounter++;
         
     while (isEmptyStack(s) != 1) { // while stack is not empty
         int stopNode = 0; // no unvisited vertices flag
@@ -118,7 +118,7 @@ int Connected(Graph g) {
                 //printf("value of vertex: %d\n", vertex);
                 push(&s, vertex); // push vertex to stack
                 g.visited[vertex-1] = 1; // indicate that vertex already visited
-                vertexCounterVisited++;
+                vertexVisitedCounter++;
                 stopNode = 1; // flag to indicate no need to pop, just push to stack
                 break;
             }
@@ -129,7 +129,7 @@ int Connected(Graph g) {
         }
     }
     
-    if (vertexCounterVisited == g.V) {
+    if (vertexVisitedCounter == g.V) {
         return 1;
     }
     else {
