@@ -4,7 +4,7 @@
 // Based on BFS algorithm, find the shortest distance from vertex v to vertex w in an undirected graph
 // Vertices range from 1 to |V|
 // Distance is measured by number of edges
-// If there is no path from vertex v to vertex w, return -1
+// If there is no path from vertex v to vertex z, return -1
 // May assume the graph is always valid
 //
 // Sample Input:
@@ -41,7 +41,7 @@ typedef struct _queue{
     QueueNode *tail;
 } Queue;
 
-int SD (Graph G, int v, int w);
+int SD (Graph G, int v, int z);
 void printGraphMatrix(Graph );
 
 // You should not change the prototypes of these functions
@@ -104,7 +104,44 @@ int main() {
 }
 
 int SD(Graph g, int v, int z) {
-    // Write your code here
+    // if both input vertices are the same
+    if (v == z) {
+        return -1;
+    }
+
+    Queue q;
+    q.size = 0;
+    q.head = NULL;
+    q.tail = NULL;
+    
+    int *dist = (int *) malloc(g.V*sizeof(int));
+
+    for (int i = 0; i < g.V; i++) {
+        dist[i] = 0;
+    }
+
+    enqueue(&q, v);
+    g.visited[v-1] = 1;
+
+    while(isEmptyQueue(q) != 1) { // while queue is not empty
+        int w = dequeue(&q);
+        
+        // if dequeued item is target
+        if (w == z) {
+            return dist[w-1];
+        }
+        
+        for (int vertex = 1; vertex <= g.V; vertex++) { // iterate through all the vertices one by one
+            // if adjacent based on adjacency matrix, and vertex yet visited
+            if(g.matrix[w-1][vertex-1] == 1 && g.visited[vertex-1] == 0) {
+                enqueue(&q, vertex);
+                g.visited[vertex-1] = 1; // indicate that vertex already visited
+                dist[vertex-1] = dist[w-1] + 1;
+            }
+        }
+    }
+
+    return -1;
 }
 
 void printGraphMatrix(Graph g) {
