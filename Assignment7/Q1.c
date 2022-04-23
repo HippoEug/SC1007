@@ -37,15 +37,18 @@ int top_down_dp(int n) {
         return 2;
     }
 
-    if (M[n - 1] == -1) {
+    if (M[n - 1] == -1) { // F(n-1) was not calculated
+        // calculate F(n-1) and store in M
         M[n - 1] = top_down_dp(n - 1);
     }
 
-    if (M[n - 2] == -1) {
+    if (M[n - 2] == -1) { // F(n-2) was not calculated
+        // calculate F(n-2) and store in M
         M[n - 2] = top_down_dp(n - 2);
     }
     
-    if (M[n - 3] == -1) {
+    if (M[n - 3] == -1) { // F(n-3) was not calculated
+        // calculate F(n-3) and store in M
         M[n - 3] = top_down_dp(n - 3);
     }
 
