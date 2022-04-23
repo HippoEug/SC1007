@@ -24,16 +24,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int **M;
+
 int bottom_up_dp(int n, int *s, int *v, int C) {
-    //write your code here
+    int i, j;
+    int first, second;
+
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= C; j++) {
+            first = M[i-1][j];
+
+            if ((j-s[i]) >= 0) {
+                second = M[i-1][j-s[i]] + v[i];
+                if (first > second) {
+                    M[i][j] = first;
+                }
+                else {
+                    M[i][j] = second;
+                }
+            }
+            else {
+                M[i][j] = first;
+            }
+        }
+    }
+    return M[n][C];
 }
 
 int main() {
     int n,C;
-    int function;
     int *s;
     int *v;
-    int i,j;
+    int i;
     
     printf("Enter the number of items n:\n");
     scanf("%d",&n);
@@ -52,6 +74,21 @@ int main() {
     for (i = 1; i <= n; i++) {
         scanf("%d", &v[i]);
     }
+
+    //Init 2D Array
+    M = malloc(n * sizeof(int *));
+    for(int x = 0; x <= n; x++){
+        M[x] = malloc(C * sizeof(int));
+    }
     
+    //Set all Rows & Columns to 0
+    for (int y = 0; y <= n; y++) {
+        M[y][0] = 0;
+    }
+    for (int z = 0; z <= C; z++) {
+        M[0][z] = 0;
+    }
+
     printf("The maximum value is: %d \n", bottom_up_dp(n,s,v,C));
 }
+
